@@ -12,6 +12,8 @@ public:
 
    virtual void std(const Ring<> r) = 0;
 
+   virtual void radical(const Ring<> r) = 0;
+
    virtual Array<Polynomial<> > polynomials(const Ring<> r) const = 0;
    
    static SingularIdeal_wrap* create(const Array<Polynomial<> > gens);
