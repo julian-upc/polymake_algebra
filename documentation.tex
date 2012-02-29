@@ -2,7 +2,16 @@
 
 \begin{document}
 \section{Installing libsingular}
-
+Install {\tt libreadline-dev} and {\tt cddlib} before.
+\begin{verbatim}
+git clone https://github.com/Singular/Sources
+cd Sources
+git checkout master
+export CC="gcc -fpic -DPIC -DLIBSINGULAR"
+export CXX="g++ -fpic -DPIC -DLIBSINGULAR"
+./configure
+make install-libsingular
+\end{verbatim}
 \section{Installing Polymake}
 
 \section{Installing the exstension}
