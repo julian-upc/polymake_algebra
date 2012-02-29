@@ -169,6 +169,7 @@ public:
    }
 
    void radical(const Ring<> r){
+      sleftv arg,r1,r2;
       ring singRing = check_ring(r);
       rChangeCurrRing(singRing);
       // Loading primdec.lib
@@ -186,6 +187,10 @@ public:
          printf("primdecGTZ not found\n");
       else
       {
+         idhdl newRingHdl=enterid("R", 0, RING_CMD, &IDROOT, FALSE); 
+         IDRING(newRingHdl)=singRing; 
+         rSetHdl(newRingHdl); 
+
          arg.rtyp=IDEAL_CMD;
          arg.data=(void *)singIdeal;
          // call radical
