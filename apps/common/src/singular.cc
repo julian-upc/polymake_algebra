@@ -38,6 +38,7 @@ void init_singular(const std::string& path)
 ring check_ring(Ring<> r){
 	Ring<>::id_type id = r.id();
 	if(!singular_ring_map.exists(id)){
+      printf("Constructing.\n");
       int nvars = r.n_vars();
       if(nvars == 0) 
          throw std::runtime_error("Given ring is not a polynomial ring.");
@@ -108,7 +109,17 @@ public:
          throw std::runtime_error("Ideal has no generators.");
       rChangeCurrRing(singRing);
       
-      singIdeal = idInit(npoly,1); // Richtig?
+      ideal I=idInit(2,1); // with 2 elements
+      // create x-25
+      poly p=pOne(); pSetExp(p,1,1);
+      pSetm(p); // pSetm mut be called after a sequence of pSetExp/pSetExpV
+      poly p2=pISet(25); p=pSub(p,p2);
+      I->m[0]=p;
+      // create 4*y^2
+      p=pISet(4); pSetExp(p,2,2);  pSetm(p);
+      I->m[1]=p;
+      singIdeal = idCopy(I);
+      /*singIdeal = idInit(npoly,1); // Richtig?
       int j = 0;
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
          poly p = pISet(0);
@@ -126,7 +137,7 @@ public:
          }
          cout << "poly: " << p_String(p,singRing,singRing) << endl;
          singIdeal->m[j]=p_Copy(p,singRing);
-      }
+      }*/
       cout << "DONE CREATING singular object" << endl;
    }
 
@@ -214,6 +225,7 @@ public:
       arg.rtyp=IDEAL_CMD;
       printf("works so far.\n");
       arg.data=(void *)I;
+      //arg.data=(void *)idCopy(singIdeal);
       // call primdecGTZ
       printf("works so far.1\n");
       leftv res=iiMake_proc(radical,NULL,&arg);
