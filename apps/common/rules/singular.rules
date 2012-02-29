@@ -22,6 +22,8 @@ declare property_type SingularIdeal : c++ (include => ["polymake/common/singular
 	
 	method std(Ring) : void : c++ ;
 
+   method radical(Ring) : void : c++ ;
+
 	method polynomials(Ring) : c++;
 
 }

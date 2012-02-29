@@ -31,6 +31,10 @@ public:
       singIdeal->std(r);
    }
 
+   void radical(const Ring<> r) const  {
+      singIdeal->radical(r);
+   }
+   
    Array<Polynomial<> > polynomials(const Ring<> r) const {
       return singIdeal->polynomials(r);
    }

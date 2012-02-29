@@ -168,6 +168,32 @@ public:
       // create polymake ideal maybe with singRing and singIdeal
    }
 
+   void radical(const Ring<> r){
+      ring singRing = check_ring(r);
+      rChangeCurrRing(singRing);
+      // Loading primdec.lib
+      memset(&arg,0,sizeof(arg));
+      memset(&r1,0,sizeof(r1));
+      memset(&r2,0,sizeof(r2));
+      arg.rtyp=STRING_CMD;
+      arg.data=omStrDup("primdec.lib");
+      r2.rtyp=LIB_CMD;
+      int err=iiExprArith2(&r1,&r2,'(',&arg);
+      if (err) printf("interpreter returns %d\n",err);
+      // now, get the procedure to call
+      idhdl radical=ggetid("radical");
+      if (radical==NULL)
+         printf("primdecGTZ not found\n");
+      else
+      {
+         arg.rtyp=IDEAL_CMD;
+         arg.data=(void *)singIdeal;
+         // call radical
+         leftv res=iiMake_proc(radical,NULL,&arg);
+
+      }
+   }
+
    Array<Polynomial<> > polynomials(const Ring<> r) const
    {
 		ring singRing = check_ring(r); 
