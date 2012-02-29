@@ -107,23 +107,22 @@ public:
       if(!npoly)
          throw std::runtime_error("Ideal has no generators.");
       rChangeCurrRing(singRing);
-
+      
       singIdeal = idInit(npoly,1); // Richtig?
       int j = 0;
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
-         poly p = p_ISet(0,singRing);
+         poly p = pISet(0);
          
          for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly->get_terms()); !term.at_end(); ++term)
          {
-            poly monomial = p_Init(singRing); // Geht das noch?
-            p_SetCoeff(monomial,convert_Rational_to_number(term->second),singRing); // Geht das SetCoeff so?
+            poly monomial = pNSet(convert_Rational_to_number(term->second)); // Geht das SetCoeff so?
             
             for(int k = 0; k<term->first.dim(); k++)
             {
-               p_SetExp(monomial,k+1,term->first[k],singRing); // Hier war der Ring drinne, muss er wieder rein?
+               pSetExp(monomial,k+1,term->first[k]); // Hier war der Ring drinne, muss er wieder rein?
             }
-            p_Setm(monomial,singRing); // Ring noetig?
-            p = p_Add_q(p,monomial,singRing);
+            pSetm(monomial); // Ring noetig?
+            p = pSub(p, monomial);
          }
          cout << "poly: " << p_String(p,singRing,singRing) << endl;
          singIdeal->m[j]=p_Copy(p,singRing);
@@ -169,10 +168,16 @@ public:
    }
 
    void radical(const Ring<> r){
+      //            see kernel/feRessource.cc
+      siInit((char *)"/home/lars/working_copies/Sources/Singular/libsingular.so");
+
+            ring singRing = check_ring(r); 
+           rChangeCurrRing(singRing);
+      // a more advanced procedure call
+      // first, load the libary primdec.lib
       sleftv arg,r1,r2;
-      ring singRing = check_ring(r);
-      rChangeCurrRing(singRing);
-      // Loading primdec.lib
+
+      // load the singular library primdec.lib:
       memset(&arg,0,sizeof(arg));
       memset(&r1,0,sizeof(r1));
       memset(&r2,0,sizeof(r2));
@@ -184,19 +189,48 @@ public:
       // now, get the procedure to call
       idhdl radical=ggetid("radical");
       if (radical==NULL)
-         printf("primdecGTZ not found\n");
+         printf("radical not found\n");
       else
       {
-         idhdl newRingHdl=enterid("R", 0, RING_CMD, &IDROOT, FALSE); 
-         IDRING(newRingHdl)=singRing; 
-         rSetHdl(newRingHdl); 
-
-         arg.rtyp=IDEAL_CMD;
-         arg.data=(void *)singIdeal;
-         // call radical
-         leftv res=iiMake_proc(radical,NULL,&arg);
-
+      // make it the default ring, also for the interpeter
+      idhdl newRingHdl=enterid("R" /* ring name*/,
+      0, /*nesting level, 0=global*/
+      RING_CMD,
+      &IDROOT,
+      FALSE);
+      IDRING(newRingHdl)=singRing;
+      rSetHdl(newRingHdl);
+      // create the ideal to decompose
+      ideal I=idInit(2,1); // with 2 elements
+      // create x-25
+      poly p=pOne(); pSetExp(p,1,1);
+      pSetm(p); // pSetm mut be called after a sequence of pSetExp/pSetExpV
+      poly p2=pISet(25); p=pSub(p,p2);
+      I->m[0]=p;
+      // create 4*y^2
+      p=pISet(4); pSetExp(p,2,2);  pSetm(p);
+      I->m[1]=p;
+      // create the arguments for primdecGTZ
+      arg.rtyp=IDEAL_CMD;
+      printf("works so far.\n");
+      arg.data=(void *)I;
+      // call primdecGTZ
+      printf("works so far.1\n");
+      leftv res=iiMake_proc(radical,NULL,&arg);
+      if (res==NULL)
+      { printf("radical returned an error\n"); errorreported = 0; }
+      else
+      {
+      printf("radical returned type %d; %s\n",res->Typ(),Tok2Cmdname(res->Typ()));
+      // if it is a list, get the parts:
+      if (res->Typ()==LIST_CMD)
+      {
+      lists L=(lists)res->Data();
+      printf("returned list consists of %d elements\n",L->nr+1);
       }
+      }
+      }
+
    }
 
    Array<Polynomial<> > polynomials(const Ring<> r) const
