@@ -41,5 +41,9 @@ object Ideal {
 		$this->SINGULAR_IDEAL->std($this->RING);
 		$this->STANDARD = $this->SINGULAR_IDEAL->polynomials($this->RING);
 	}
+
+	rule RADICAL : SINGULAR_IDEAL, RING {
+		$this->SINGULAR_IDEAL->radical($this->RING);
+	}
 }
 
