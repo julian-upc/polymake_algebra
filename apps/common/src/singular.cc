@@ -13,7 +13,9 @@ namespace polymake { namespace common {
 
 int singular_initialized = 0;
 
+// Mapping Singular rings to their handles.
 Map<Ring<>::id_type, idhdl> singular_ring_map;
+// Storing the handles for the Singular rings globally.
 Map<std::string, idhdl> singular_function_map;
 
 void singular_error_handler(const char* error)
@@ -21,6 +23,7 @@ void singular_error_handler(const char* error)
    throw std::runtime_error(error);
 }
 
+// Initialize Singular:
 void init_singular(const std::string& path) 
 {
    if(singular_initialized)
@@ -35,8 +38,10 @@ void init_singular(const std::string& path)
    WerrorS_callback = &singular_error_handler;
    
    sleftv arg,r1,r2;
-
+   
    // load the singular library primdec.lib:
+   // Is it really necessary to do this here?
+   // Should we not only load libraries on demand?
    memset(&arg,0,sizeof(arg));
    memset(&r1,0,sizeof(r1));
    memset(&r2,0,sizeof(r2));
@@ -49,6 +54,10 @@ void init_singular(const std::string& path)
    singular_initialized = 1;
 }
 
+// This function returns the idhdl of the ring to be used.
+// If the handle does not exist the handle is created.
+// All handles are stored globally since using different handles for the same
+// ring result in segmentation faults.
 idhdl get_singular_function(std::string s) {
    if(!singular_function_map.exists(s)) {
       // now, get the procedure to call
@@ -60,26 +69,34 @@ idhdl get_singular_function(std::string s) {
    return singular_function_map[s];
 }
 
+// Returns the Singular equivalent for a Polymake ring.
+// If the Singular ring does not exist, it is created and stored globally,
+// inderectly, since it is contained in the handle.
+// Also the idhdl of the ring is created here.
 ring check_ring(Ring<> r){
    Ring<>::id_type id = r.id();
    if(!singular_ring_map.exists(id)){
       int nvars = r.n_vars();
       if(nvars == 0) 
          throw std::runtime_error("Given ring is not a polynomial ring.");
+      // Create variables:
       char **n=(char**)omalloc(nvars*sizeof(char*));
       for(int i=0; i<nvars; i++)
       {
          n[i] = omStrDup(r.names()[i].c_str());
       }
+      // Create Singular ring:
       ring r = rDefault(0,nvars,n);
-      // make it the default ring, also for the interpeter
       char* ringid = (char*) malloc(2+sizeof(unsigned int));
       sprintf(ringid,"R-%0u",id);
+      // Create handle for ring:
       idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
       IDRING(newRingHdl)=r;
+      // Store handle:
       singular_ring_map[id] = newRingHdl;
 
    }
+   // Make it the default ring, also for the interpeter
    rSetHdl(singular_ring_map[id]);
    return currRing;
 }
@@ -120,39 +137,32 @@ private:
    ideal singIdeal;
 
 public:
-   /*SingularIdeal_impl() 
-   {
-      if (!singular_initialized)
-         throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
-      cout << "creating empty SingularIdeal_impl" << endl;
-      singIdeal=NULL;
-   }*/
-   
+  
+   // Constructing singIdeal from the generators:
    SingularIdeal_impl(const Array<Polynomial<> > gens) 
    {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
       //cout << "creating SingularIdeal_impl from Ideal" << endl;
-      
+      // Get Singular ring:
       ring singRing = check_ring(gens[0].get_ring());
       int npoly = gens.size();
       if(!npoly)
          throw std::runtime_error("Ideal has no generators.");
       
-      singIdeal = idInit(npoly,1); // Richtig?
+      singIdeal = idInit(npoly,1);
       int j = 0;
+      // Converting monomials as described in libsing-test2.cc.
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
          poly p = pISet(0);
-         
          for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly->get_terms()); !term.at_end(); ++term)
          {
-            poly monomial = pNSet(convert_Rational_to_number(term->second)); // Geht das SetCoeff so?
-            
+            poly monomial = pNSet(convert_Rational_to_number(term->second)); 
             for(int k = 0; k<term->first.dim(); k++)
             {
-               pSetExp(monomial,k+1,term->first[k]); // Hier war der Ring drinne, muss er wieder rein?
+               pSetExp(monomial,k+1,term->first[k]); 
             }
-            pSetm(monomial); // Ring noetig?
+            pSetm(monomial); 
             p = pSub(p, monomial);
          }
          //cout << "poly: " << p_String(p,singRing,singRing) << endl;
@@ -196,12 +206,12 @@ public:
       // create polymake ideal maybe with singRing and singIdeal
    }
 
+   // Compute the radical of an ideal using primdec.lib from Singular
    SingularIdeal_wrap* radical(const Ring<> r) const {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
 
       ring singRing = check_ring(r); 
-      // a more advanced procedure call
       sleftv arg;
       memset(&arg,0,sizeof(arg));
 
@@ -218,6 +228,7 @@ public:
       return new SingularIdeal_impl((ideal) (res->Data()));
    }
 
+   // Converting singIdeal generators to an array of Polymake polynomials.
    Array<Polynomial<> > polynomials(const Ring<> r) const
    {
       ring singRing = check_ring(r); 
@@ -251,7 +262,6 @@ public:
 
 };
 
-//}
 
 SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens) 
 {
