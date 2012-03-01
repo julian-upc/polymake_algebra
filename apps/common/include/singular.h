@@ -12,7 +12,7 @@ public:
 
    virtual void std(const Ring<> r) = 0;
 
-   virtual void radical(const Ring<> r) = 0;
+   virtual SingularIdeal_wrap* radical(const Ring<> r) const = 0;
 
    virtual Array<Polynomial<> > polynomials(const Ring<> r) const = 0;
    
@@ -29,12 +29,16 @@ public:
       singIdeal = SingularIdeal_wrap::create(gens);
    }
 
+   SingularIdeal(SingularIdeal_wrap* sI) {
+      singIdeal = sI;
+   }
+
    void std(const Ring<> r) const  {
       singIdeal->std(r);
    }
 
-   void radical(const Ring<> r) const  {
-      singIdeal->radical(r);
+   SingularIdeal radical(const Ring<> r) const  {
+      return SingularIdeal(singIdeal->radical(r));
    }
    
    Array<Polynomial<> > polynomials(const Ring<> r) const {
