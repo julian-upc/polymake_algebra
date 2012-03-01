@@ -15,7 +15,7 @@ int singular_initialized = 0;
 
 // Mapping Singular rings to their handles.
 Map<Ring<>::id_type, idhdl> singular_ring_map;
-// Storing the handles for the Singular rings globally.
+// Storing the handles for the Singular functions globally.
 Map<std::string, idhdl> singular_function_map;
 
 void singular_error_handler(const char* error)
@@ -54,10 +54,10 @@ void init_singular(const std::string& path)
    singular_initialized = 1;
 }
 
-// This function returns the idhdl of the ring to be used.
-// If the handle does not exist the handle is created.
-// All handles are stored globally since using different handles for the same
-// ring result in segmentation faults.
+// This function returns the idhdl of the function to be used.
+// If the handle does not exist the function is looked up and the handle
+// is created.
+// All handles are stored globally.
 idhdl get_singular_function(std::string s) {
    if(!singular_function_map.exists(s)) {
       // now, get the procedure to call
@@ -71,7 +71,7 @@ idhdl get_singular_function(std::string s) {
 
 // Returns the Singular equivalent for a Polymake ring.
 // If the Singular ring does not exist, it is created and stored globally,
-// inderectly, since it is contained in the handle.
+// indirectly, since it is contained in the handle.
 // Also the idhdl of the ring is created here.
 ring check_ring(Ring<> r){
    Ring<>::id_type id = r.id();
@@ -101,6 +101,7 @@ ring check_ring(Ring<> r){
    return currRing;
 }
 
+// Convert a Singular number to a GMP rational.
 Rational convert_number_to_Rational(number n, ring ring)
 {
    if(rField_is_Q(ring)){
@@ -121,6 +122,7 @@ Rational convert_number_to_Rational(number n, ring ring)
    throw std::runtime_error("I can has number? :P");
 }
 
+// Convert a GMP rational to a Singular number.
 number convert_Rational_to_number(const Rational& r)
 {
    mpz_t num, denom;
@@ -200,10 +202,6 @@ public:
       //cout << "DONE COMPUTING std basis" << endl;
       id_Delete(&singIdeal,singRing);
       singIdeal = res;
-      // check if singIdeal exists
-      // set singulardefaultring
-      // call groebner
-      // create polymake ideal maybe with singRing and singIdeal
    }
 
    // Compute the radical of an ideal using primdec.lib from Singular
