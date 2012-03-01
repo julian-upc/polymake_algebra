@@ -205,7 +205,7 @@ public:
    }
 
    // Compute the dimension of an ideal.
-   void dim(const Ring<> r) const {
+   void dim(const Ring<> r) {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
       ring singRing = check_ring(r); 
@@ -220,6 +220,8 @@ public:
          errorreported = 0;
          throw std::runtime_error("dim returned an error");
       }
+      printf("dim returned type %d; %s\n",res->Typ(),Tok2Cmdname(res->Typ()));
+
    }
    
    // Compute the radical of an ideal using primdec.lib from Singular
