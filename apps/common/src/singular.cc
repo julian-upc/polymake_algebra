@@ -13,7 +13,7 @@ namespace polymake { namespace common {
 
 int singular_initialized = 0;
 
-// Mapping Singular rings to their handles.
+// Mapping Polymake rings to their Singular handles.
 Map<Ring<>::id_type, idhdl> singular_ring_map;
 // Storing the handles for the Singular functions globally.
 Map<std::string, idhdl> singular_function_map;
