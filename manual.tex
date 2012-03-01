@@ -1,0 +1,35 @@
+\documentclass[a4paper]{article}
+
+\usepackage{verbatim}
+
+\newcommand{\pm}{Polymake}
+
+\begin{document}
+\section{Installing libsingular}
+Install {\tt libreadline-dev} and {\tt cddlib} before.
+\begin{verbatim}
+git clone https://github.com/Singular/Sources
+cd Sources
+git checkout master
+export CC="gcc -fpic -DPIC -DLIBSINGULAR"
+export CXX="g++ -fpic -DPIC -DLIBSINGULAR"
+./configure
+make install-libsingular
+\end{verbatim}
+\section{Installing Polymake}
+
+\section{Installing the exstension}
+
+\begin{verbatim}
+git clone git@github.com:lkastner/polymake_algebra.git
+cd polymake_algebra
+git checkout master
+\end{verbatim}
+
+Start \pm and enter the following command:
+\begin{verbatim}
+import_extension "directory/polymake_algebra";
+\end{verbatim}
+\section{Ideals in Polymake}
+
+\end{document}
