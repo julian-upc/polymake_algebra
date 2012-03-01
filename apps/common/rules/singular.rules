@@ -36,6 +36,10 @@ object Ideal {
       $this->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS);
    }
    precondition : !ZERO;
+   
+   rule DIM : STANDARD, SINGULAR_IDEAL, RING {
+      $this->SINGULAR_IDEAL->dim($this->RING);
+   }
 
    rule STANDARD : SINGULAR_IDEAL, RING {
       $this->SINGULAR_IDEAL->std($this->RING);

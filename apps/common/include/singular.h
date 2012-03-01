@@ -11,6 +11,8 @@ public:
    virtual ~SingularIdeal_wrap() {cout << "SingularIdeal destroyed" << endl; }
 
    virtual void std(const Ring<> r) = 0;
+   
+   virtual void dim(const Ring<> r) = 0;
 
    virtual SingularIdeal_wrap* radical(const Ring<> r) const = 0;
 
@@ -31,6 +33,10 @@ public:
 
    SingularIdeal(SingularIdeal_wrap* sI) {
       singIdeal = sI;
+   }
+
+   void dim(const Ring<> r) const  {
+      singIdeal->dim(r);
    }
 
    void std(const Ring<> r) const  {
