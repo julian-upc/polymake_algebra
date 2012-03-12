@@ -5,7 +5,7 @@
 #include "polymake/Ring.h"
 
 #include <libsingular.h>
-
+#include "singular/stairc.h"
 
 namespace polymake { namespace common {
 
@@ -205,23 +205,11 @@ public:
    }
 
    // Compute the dimension of an ideal.
-   void dim(const Ring<> r) {
+   int dim(const Ring<> r) {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
-      ring singRing = check_ring(r); 
-      sleftv arg;
-      memset(&arg,0,sizeof(arg));
-      idhdl dim=get_singular_function("dim");
-      arg.rtyp=IDEAL_CMD;
-      arg.data=(void *)idCopy(singIdeal);
-      // call dim
-      leftv res=iiMake_proc(dim,NULL,&arg);
-      if (res==NULL) {
-         errorreported = 0;
-         throw std::runtime_error("dim returned an error");
-      }
-      printf("dim returned type %d; %s\n",res->Typ(),Tok2Cmdname(res->Typ()));
-
+      check_ring(r); 
+      return scDimInt(singIdeal, NULL);
    }
    
    // Compute the radical of an ideal using primdec.lib from Singular

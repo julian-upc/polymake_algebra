@@ -22,7 +22,7 @@ declare property_type SingularIdeal : c++ (include => ["polymake/common/singular
    
    method std(Ring) : void : c++ ;
    
-   method dim(Ring) : void : c++ ;
+   method dim(Ring) : c++ ;
 
    method radical(Ring) : c++ ;
 
@@ -40,7 +40,8 @@ object Ideal {
    precondition : !ZERO;
    
    rule DIM : STANDARD, SINGULAR_IDEAL, RING {
-      $this->SINGULAR_IDEAL->dim($this->RING);
+      print "Computing dim.\n";
+      $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
    }
 
    rule STANDARD : SINGULAR_IDEAL, RING {
