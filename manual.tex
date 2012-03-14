@@ -2,7 +2,7 @@
 
 \usepackage{verbatim}
 
-\newcommand{\pm}{Polymake}
+\newcommand{\PM}{Polymake}
 
 \begin{document}
 \section{Installing libsingular}
@@ -18,7 +18,7 @@ make install-libsingular
 \end{verbatim}
 \section{Installing Polymake}
 
-\section{Installing the exstension}
+\section{Installing the extension}
 
 \begin{verbatim}
 git clone git@github.com:lkastner/polymake_algebra.git
@@ -26,10 +26,31 @@ cd polymake_algebra
 git checkout master
 \end{verbatim}
 
-Start \pm and enter the following command:
+Start \PM and enter the following command:
 \begin{verbatim}
 import_extension "directory/polymake_algebra";
 \end{verbatim}
 \section{Ideals in Polymake}
+One can build an ideal from an array of polynomials as follows:
+\begin{verbatim}
+init_singular("Path to libsingular.so");
+$r=new Ring(qw(x y z));
+($x,$y,$z)=$r->variables;
+$p1=3*$x*$y + 2*$z + 1;
+$p2=2*$x + 1/2;
+print $p1," , ",$p2,"\n";
+$i = new Ideal(GENERATORS=>[$p1,$p2]);
+\end{verbatim}
+Properties working:
+\begin{enumerate}
+\item STANDARD: Computes a standard basis of the ideal. So far we assume a global ordering on the ring of polynomials. No other rings or orderings can be accessed, yet.
+\item RADICAL: Computes the radical of the ideal.
+\item DIM: Computes the dimension of the ideal. So far I have no idea what the output means.
+\end{enumerate}
+\section{Problems}
+Polymake allows negative exponents.
 
+Singular allows different monomial orderings. So far we are only using one.
+
+Rings should be able to have a grading other than the trivial one.
 \end{document}
