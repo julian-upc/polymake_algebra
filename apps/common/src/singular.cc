@@ -155,10 +155,10 @@ number convert_Rational_to_number(const Rational& r)
    return nlInit2gmp(num,denom);
 }
 
-poly convert_Polynomial_to_poly(Polynomial<> mypoly)
+poly convert_Polynomial_to_poly(const Polynomial<> mypoly)
 {
    poly p = pISet(0);
-   for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly->get_terms()); !term.at_end(); ++term)
+   for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly.get_terms()); !term.at_end(); ++term)
    {
       poly monomial = pNSet(convert_Rational_to_number(term->second)); 
       for(int k = 0; k<term->first.dim(); k++)
@@ -177,10 +177,6 @@ private:
 
 public:
   
-   static SingularIdeal_impl quotient(const Ring<> r, SingularIdeal_impl I, SingularIdeal_impl J){
-      check_ring(r);
-   }
-
    // Constructing singIdeal from the generators:
    SingularIdeal_impl(const Array<Polynomial<> > gens) 
    {
@@ -197,7 +193,7 @@ public:
       int j = 0;
       // Converting monomials as described in libsing-test2.cc.
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
-         poly p = convert_Polynomial_to_poly(mypoly);
+         poly p = convert_Polynomial_to_poly(*mypoly);
          //cout << "poly: " << p_String(p,singRing,singRing) << endl;
          singIdeal->m[j]=p_Copy(p,singRing);
       }
@@ -301,6 +297,7 @@ public:
 };
 
 SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
+   check_ring(r);
    const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
    const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
 
