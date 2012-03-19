@@ -30,6 +30,9 @@
 
 namespace polymake { namespace common {
 
+SingularIdeal_impl quotient(const Ring<> r, SingularIdeal_impl I, SingularIdeal_impl J){
+
+}
 //namespace {
 
 int singular_initialized = 0;
@@ -295,9 +298,6 @@ SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens)
    return new SingularIdeal_impl(gens);
 }
 
-SingularIdeal_wrap quotient(const Ring<> r, SingularIdeal_wrap I, SingularIdeal_wrap J){
-   return NULL;
-}
 
 UserFunction4perl("# @category Other"
                   "# @param String path Path to the singular directory",

@@ -26,8 +26,7 @@
 
 namespace polymake { namespace common {
 
-public:
-   SingularIdeal quotient(const Ring<> r, SingularIdeal I, SingularIdeal J);
+SingularIdeal quotient(const Ring<> r, SingularIdeal I, SingularIdeal J);
 
 class SingularIdeal_wrap {
 public:
@@ -43,6 +42,7 @@ public:
    
    static SingularIdeal_wrap* create(const Array<Polynomial<> > gens);
 
+   static SingularIdeal_wrap quotient(const Ring<> r, SingularIdeal_wrap I, SingularIdeal J);
 //   virtual SingularIdeal_wrap* quotient(const Ring<> r, const SingularIdeal_wrap I, const SingularIdeal_wrap J) const = 0;
 };
 
@@ -73,6 +73,10 @@ public:
    
    Array<Polynomial<> > polynomials(const Ring<> r) const {
       return singIdeal->polynomials(r);
+   }
+   
+   friend SingularIdeal quotient(const Ring<> r, SingularIdeal I, SingularIdeal J){
+      return "bla";
    }
 };
 
