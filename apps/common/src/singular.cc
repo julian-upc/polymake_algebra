@@ -30,9 +30,6 @@
 
 namespace polymake { namespace common {
 
-SingularIdeal_impl quotient(const Ring<> r, SingularIdeal_impl I, SingularIdeal_impl J){
-
-}
 //namespace {
 
 int singular_initialized = 0;
@@ -158,12 +155,32 @@ number convert_Rational_to_number(const Rational& r)
    return nlInit2gmp(num,denom);
 }
 
+poly convert_Polynomial_to_poly(Polynomial<> mypoly)
+{
+   poly p = pISet(0);
+   for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly->get_terms()); !term.at_end(); ++term)
+   {
+      poly monomial = pNSet(convert_Rational_to_number(term->second)); 
+      for(int k = 0; k<term->first.dim(); k++)
+      {
+         pSetExp(monomial,k+1,term->first[k]); 
+      }
+      pSetm(monomial); 
+      p = pSub(p, monomial);
+   }
+   return p;
+}
+
 class SingularIdeal_impl : public SingularIdeal_wrap {
 private:
    ideal singIdeal;
 
 public:
   
+   static SingularIdeal_impl quotient(const Ring<> r, SingularIdeal_impl I, SingularIdeal_impl J){
+      check_ring(r);
+   }
+
    // Constructing singIdeal from the generators:
    SingularIdeal_impl(const Array<Polynomial<> > gens) 
    {
@@ -180,17 +197,7 @@ public:
       int j = 0;
       // Converting monomials as described in libsing-test2.cc.
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
-         poly p = pISet(0);
-         for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly->get_terms()); !term.at_end(); ++term)
-         {
-            poly monomial = pNSet(convert_Rational_to_number(term->second)); 
-            for(int k = 0; k<term->first.dim(); k++)
-            {
-               pSetExp(monomial,k+1,term->first[k]); 
-            }
-            pSetm(monomial); 
-            p = pSub(p, monomial);
-         }
+         poly p = convert_Polynomial_to_poly(mypoly);
          //cout << "poly: " << p_String(p,singRing,singRing) << endl;
          singIdeal->m[j]=p_Copy(p,singRing);
       }
