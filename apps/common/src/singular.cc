@@ -296,9 +296,16 @@ public:
       }
       return Array<Polynomial<> >(polys);
    }
-
+   
+   friend SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
 };
 
+SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
+   const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
+   const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
+
+   return new SingularIdeal_impl(NULL); // FIXME
+}
 
 SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens) 
 {
