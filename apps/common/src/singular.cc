@@ -300,8 +300,8 @@ SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularI
    check_ring(r);
    const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
    const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
-
-   return new SingularIdeal_impl(NULL); // FIXME
+   ideal quot = idQuot(sI, sJ, false, true);
+   return new SingularIdeal_impl(quot); // FIXME
 }
 
 SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens) 
@@ -309,6 +309,8 @@ SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens)
    return new SingularIdeal_impl(gens);
 }
 
+UserFunction4perl("quotient",
+                  &quotient, "quotient($)");
 
 UserFunction4perl("# @category Other"
                   "# @param String path Path to the singular directory",
