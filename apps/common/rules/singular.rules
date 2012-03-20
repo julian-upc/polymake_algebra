@@ -53,13 +53,12 @@ object Ideal {
 
    property SINGULAR_IDEAL : SingularIdeal;
 
-   rule SINGULAR_IDEAL : GENERATORS {
-      $this->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS);
+   rule SINGULAR_IDEAL : STANDARD | GENERATORS {
+      $this->SINGULAR_IDEAL = new SingularIdeal($this->STANDARD | GENERATORS);
    }
    precondition : !ZERO;
-   
+
    rule DIM : STANDARD, SINGULAR_IDEAL, RING {
-      print "Computing dim.\n";
       $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
    }
 
@@ -71,7 +70,6 @@ object Ideal {
    rule RADICAL : SINGULAR_IDEAL, RING {
       my $si = $this->SINGULAR_IDEAL->radical($this->RING);
       $this->RADICAL = new Ideal(GENERATORS=>$si->polynomials($this->RING));
-      #$this->SINGULAR_IDEAL->radical($this->RING);
    }
 }
 

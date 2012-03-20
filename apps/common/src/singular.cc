@@ -210,13 +210,15 @@ public:
 
    ~SingularIdeal_impl() 
    {
+      /* FIXME
       cout << "SingularIdeal_impl cleaning up" <<endl;
-      /*if(singRing!=NULL) {
+      if(singRing!=NULL) {
          if(singIdeal!=NULL)
             id_Delete(&singIdeal,singRing);
          //rKill(singRing);
-      }*/
+      }
       cout << "SingularIdeal_impl destroyed" << endl;
+      */
    }
 
    // Compute a groebner basis of a Polymake ideal using Singular
@@ -293,15 +295,14 @@ public:
       return Array<Polynomial<> >(polys);
    }
    
-   friend SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
+   friend SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
 };
 
-SingularIdeal_wrap* SingularIdeal_wrap::quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
-   check_ring(r);
+SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
    const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
    const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
    ideal quot = idQuot(sI, sJ, false, true);
-   return new SingularIdeal_impl(quot); // FIXME
+   return new SingularIdeal_impl(quot);
 }
 
 SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens) 
@@ -309,8 +310,40 @@ SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens)
    return new SingularIdeal_impl(gens);
 }
 
-UserFunction4perl("quotient",
-                  &quotient, "quotient($)");
+perl::Object quotient(perl::Object I, perl::Object J)
+{
+   Ring<> ri;
+   Ring<> rj;
+   I.give("RING") >> ri;
+   J.give("RING") >> rj;
+   if (ri.id() != rj.id())
+      throw std::runtime_error("Ideals of different rings");
+
+   check_ring(ri);
+   
+   // FIXME which one should be STANDARD ?
+   const Array<Polynomial<> > gensI = I.give("STANDARD");
+   const Array<Polynomial<> > gensJ = J.give("STANDARD | GENERATORS");
+   
+   SingularIdeal_impl wrapI(gensI);
+   SingularIdeal_impl wrapJ(gensJ);
+
+   SingularIdeal_wrap* quotwrap = SingularIdeal_wrap::quotient(&wrapI,&wrapJ);
+
+   perl::Object res("Ideal");
+   res.take("RING") << ri;
+   res.take("GENERATORS") << quotwrap->polynomials(ri);
+   delete quotwrap;
+   return res;
+}
+
+
+UserFunction4perl("# @category Algebra"
+                  "# Computes an ideal quotient via SINGULAR"
+                  "# @param Ideal I"
+                  "# @param Ideal J"
+                  "# @return Ideal",
+                  &quotient, "quotient(Ideal, Ideal)");
 
 UserFunction4perl("# @category Other"
                   "# @param String path Path to the singular directory",

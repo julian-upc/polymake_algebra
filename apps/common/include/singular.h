@@ -28,11 +28,10 @@ namespace polymake { namespace common {
 
 class SingularIdeal;
 
-SingularIdeal quotient(const Ring<> r, SingularIdeal I, SingularIdeal J);
 
 class SingularIdeal_wrap {
 public:
-   virtual ~SingularIdeal_wrap() {cout << "SingularIdeal destroyed" << endl; }
+   virtual ~SingularIdeal_wrap() { /* FIXME cout << "SingularIdeal destroyed" << endl; */ }
 
    virtual void std(const Ring<> r) = 0;
    
@@ -44,8 +43,7 @@ public:
    
    static SingularIdeal_wrap* create(const Array<Polynomial<> > gens);
 
-   static SingularIdeal_wrap* quotient(const Ring<> r, const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
-//   virtual SingularIdeal_wrap* quotient(const Ring<> r, const SingularIdeal_wrap I, const SingularIdeal_wrap J) const = 0;
+   static SingularIdeal_wrap* quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
 };
 
 class SingularIdeal {
@@ -77,14 +75,8 @@ public:
       return singIdeal->polynomials(r);
    }
    
-   friend SingularIdeal quotient(const Ring<> r, const SingularIdeal I, const SingularIdeal J){ 
-      return SingularIdeal(SingularIdeal_wrap::quotient(r,I.singIdeal,J.singIdeal));
-   }
+   friend perl::Object quotient(perl::Object I, perl::Object J);
 };
-
-/*SingularIdeal quotient(const Ring<> r, SingularIdeal I, SingularIdeal J) {
-   return SingularIdeal(SingularIdeal_wrap::quotient(r,I.singIdeal,J.singIdeal));
-}*/
 
 
 /*

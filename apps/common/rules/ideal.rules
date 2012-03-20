@@ -46,7 +46,7 @@ object Ideal {
 
 	user_method HOMOGENIZE {
 		my ($this, $var) = @_;
-
+      die "no implemented yet";
 		my $i = new Ideal();
 
 		return $i;
@@ -68,9 +68,10 @@ object Ideal {
 		$this->PRIMARY = $this->RADICAL->PRIME;
 	}
 
-	rule ZERO : GENERATORS {
-		if($this->GENERATORS->size != 0){
-			foreach my $p (@{$this->GENERATORS}){
+	rule ZERO : STANDARD | GENERATORS {
+      my $gens = $this->STANDARD | GENERATORS;
+		if($gens->size != 0){
+			foreach my $p (@{$gens}){
 				if(!$p->trivial){
 					$this->ZERO = 0;
 					return;
@@ -80,8 +81,9 @@ object Ideal {
 		$this->ZERO = 1;
 	}
 
-	rule RING : GENERATORS {
-		$this->RING = $this->GENERATORS->[0]->get_ring;
+	rule RING : STANDARD | GENERATORS {
+      my $gens = $this->STANDARD | GENERATORS;
+		$this->RING = $gens->[0]->get_ring;
 	}
 	precondition : !ZERO;
 
