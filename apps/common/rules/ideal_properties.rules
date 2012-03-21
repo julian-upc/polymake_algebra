@@ -17,6 +17,16 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
+object Groebner {
+
+   property GROEBNER_BASIS : Array<Polynomials>;
+
+   property INITIAL_IDEAL : Ideal;
+
+   property MONOMIAL_ORDERING : Matrix;
+
+
+}
 
 object Ideal {
 
@@ -26,9 +36,13 @@ object Ideal {
 	
 	property GENERATORS : Array<Polynomial>;
 	
+	property GROEBNER : Groebner : multiple;
+
 	property HILBERT_POLYNOMIAL : Polynomial;
 
 	property HOMOGENEOUS : Bool;
+
+   property MONOMIAL : Bool;
 
 	property PRIME : Bool;
 
@@ -39,8 +53,6 @@ object Ideal {
 	property RADICAL : Ideal;
 
 	property RING : Ring;
-
-	property STANDARD : Array<Polynomial>;
 
 	property ZERO : Bool;
 

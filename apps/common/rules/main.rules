@@ -19,8 +19,11 @@
 
 declare object Ideal;
 
+declare object GroebnerBasis;
+
 INCLUDE
    ideal.rules
+   ideal_properties.rules
    singular.rules
 
 property_type Polynomial {
