@@ -53,18 +53,18 @@ object Ideal {
 
    property SINGULAR_IDEAL : SingularIdeal;
 
-   rule SINGULAR_IDEAL : STANDARD | GENERATORS {
-      $this->SINGULAR_IDEAL = new SingularIdeal($this->STANDARD | GENERATORS);
+   rule SINGULAR_IDEAL : GROEBNER.GROEBNER_BASIS | GENERATORS {
+      $this->SINGULAR_IDEAL = new SingularIdeal($this->GROEBNER->GROEBNER_BASIS | GENERATORS);
    }
    precondition : !ZERO;
 
-   rule DIM : STANDARD, SINGULAR_IDEAL, RING {
+   rule DIM : GROEBNER.GROEBNER_BASIS, SINGULAR_IDEAL, RING {
       $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
    }
 
-   rule STANDARD : SINGULAR_IDEAL, RING {
+   rule GROEBNER.GROEBNER_BASIS : SINGULAR_IDEAL, RING {
       $this->SINGULAR_IDEAL->std($this->RING);
-      $this->STANDARD = $this->SINGULAR_IDEAL->polynomials($this->RING);
+      $this->GROEBNER->GROEBNER_BASIS = $this->SINGULAR_IDEAL->polynomials($this->RING);
    }
 
    rule RADICAL : SINGULAR_IDEAL, RING {
