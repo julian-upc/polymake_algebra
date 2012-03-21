@@ -301,7 +301,9 @@ public:
 SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
    const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
    const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
-   ideal quot = idQuot(sI, sJ, false, true);
+   // The first true indicates, that we receive a standard basis of I,
+   // the second one that we want the output to be an ideal.
+   ideal quot = idQuot(sI, sJ, true, true);
    return new SingularIdeal_impl(quot);
 }
 

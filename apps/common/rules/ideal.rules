@@ -17,13 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-
+# FIXME: Template parameters for coefficients and exponents.
+# TODO: Move to kernel (mtk).
 object Ideal {
 
 	property DEPTH : Int;
 
 	property DIM : Int;
 	
+   # TODO: mtk.
 	property GENERATORS : Array<Polynomial>;
 	
 	property HILBERT_POLYNOMIAL : Polynomial;
@@ -38,10 +40,13 @@ object Ideal {
 
 	property RADICAL : Ideal;
 
+   # TODO: mtk.
 	property RING : Ring;
 
+   # TODO: mtk.
 	property STANDARD : Array<Polynomial>;
 
+   # TODO: mtk.
 	property ZERO : Bool;
 
 	user_method HOMOGENIZE {
