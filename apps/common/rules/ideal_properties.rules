@@ -21,7 +21,7 @@
 # This object contains all properties of an ideal that depend on the monomial ordering.
 object Groebner {
 
-   property GROEBNER_BASIS : Array<Polynomials>;
+   property GROEBNER_BASIS : Array<Polynomial>;
 
    property INITIAL_IDEAL : Ideal;
 
