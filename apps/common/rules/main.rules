@@ -19,7 +19,11 @@
 
 declare object Ideal;
 
-declare object Groebner;
+object Ideal {
+
+   declare object Groebner;
+
+}
 
 INCLUDE
    ideal_properties.rules
