@@ -21,34 +21,6 @@
 # TODO: Move to kernel (mtk).
 object Ideal {
 
-	property DEPTH : Int;
-
-	property DIM : Int;
-	
-   # TODO: mtk.
-	property GENERATORS : Array<Polynomial>;
-	
-	property HILBERT_POLYNOMIAL : Polynomial;
-
-	property HOMOGENEOUS : Bool;
-
-	property PRIME : Bool;
-
-	property PRIMARY : Bool;
-
-	property PRIMARY_DECOMPOSITION : Ideal : multiple;
-
-	property RADICAL : Ideal;
-
-   # TODO: mtk.
-	property RING : Ring;
-
-   # TODO: mtk.
-	property STANDARD : Array<Polynomial>;
-
-   # TODO: mtk.
-	property ZERO : Bool;
-
 	user_method HOMOGENIZE {
 		my ($this, $var) = @_;
       die "no implemented yet";
