@@ -61,8 +61,8 @@ object Ideal {
    }
    precondition : !ZERO;
 
-   rule DIM : GROEBNER.GROEBNER_BASIS, SINGULAR_IDEAL, RING {
-      $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
+   rule DIM : GROEBNER.GROEBNER_BASIS, GROEBNER.SINGULAR_IDEAL, RING {
+      $this->DIM = $this->GROEBNER->SINGULAR_IDEAL->dim($this->RING);
    }
 
    rule GROEBNER.GROEBNER_BASIS : GROEBNER.SINGULAR_IDEAL, RING {
