@@ -45,8 +45,8 @@ object Ideal {
 		$this->PRIMARY = $this->RADICAL->PRIME;
 	}
 
-	rule ZERO : GROEBNER.GROEBNER_BASIS | GENERATORS {
-      my $gens = $this->GROEBNER->GROBERNER_BASIS | GENERATORS;
+	rule ZERO : GENERATORS {
+      my $gens = $this->GENERATORS;
 		if($gens->size != 0){
 			foreach my $p (@{$gens}){
 				if(!$p->trivial){
@@ -58,8 +58,8 @@ object Ideal {
 		$this->ZERO = 1;
 	}
 
-	rule RING : GROEBNER.GROEBNER_BASIS | GENERATORS {
-      my $gens = $this->GROEBNER->GROEBNER_BASIS | GENERATORS;
+	rule RING : GENERATORS {
+      my $gens = $this->GENERATORS;
 		$this->RING = $gens->[0]->get_ring;
 	}
 	precondition : !ZERO;

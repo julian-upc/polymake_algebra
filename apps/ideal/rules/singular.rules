@@ -40,11 +40,11 @@ object Groebner {
 
       method construct(Array<Polynomial>, Matrix<Int>) : c++;
       
-      method std(Ring) : void : c++ ;
+      method groebner() : void : c++ ;
       
-      method dim(Ring) : c++ ;
+      method dim() : c++ ;
 
-      method radical(Ring) : c++ ;
+      method radical() : c++ ;
 
       method polynomials(Ring) : c++;
 
@@ -56,22 +56,30 @@ object Groebner {
 
 object Ideal {
 
-   rule GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.MONOMIAL_ORDERING {
+   rule GROEBNER.GROEBNER_BASIS, GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.MONOMIAL_ORDERING , RING {
       $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
+      $this->GROEBNER->SINGULAR_IDEAL->groebner();
+      $this->GROEBNER->GROEBNER_BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
    }
    precondition : !ZERO;
 
-   rule DIM : GROEBNER.GROEBNER_BASIS, GROEBNER.SINGULAR_IDEAL, RING {
-      $this->DIM = $this->GROEBNER->SINGULAR_IDEAL->dim($this->RING);
+   
+   rule GROEBNER.SINGULAR_IDEAL : GROEBNER.GROEBNER_BASIS , GROEBNER.MONOMIAL_ORDERING {
+      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
    }
 
-   rule GROEBNER.GROEBNER_BASIS : GROEBNER.SINGULAR_IDEAL, RING {
-      $this->GROEBNER->SINGULAR_IDEAL->std($this->RING);
-      $this->GROEBNER->GROEBNER_BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
+   rule DIM : GROEBNER.SINGULAR_IDEAL {
+      $this->DIM = $this->GROEBNER->SINGULAR_IDEAL->dim();
    }
 
-   rule RADICAL : GROEBNER.SINGULAR_IDEAL, RING {
-      my $si = $this->GROEBNER->SINGULAR_IDEAL->radical($this->RING);
-      $this->RADICAL = new Ideal(GENERATORS=>$si->polynomials($this->RING));
+
+   rule RADICAL : RING {
+      my $si;
+      unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
+         warn "using temporary GROEBNER object with default ordering";
+         $si = $this->GROEBNER(MONOMIAL_ORDERING=>unit_matrix($this->RING->names->size),temporary)->SINGULAR_IDEAL; #FIXME ordering
+      }
+      my $radical = $si->radical();
+      $this->RADICAL = new Ideal(GENERATORS=>$radical->polynomials($this->RING),RING=>$this->RING);
    }
 }

@@ -33,17 +33,17 @@ class SingularIdeal_wrap {
 public:
    virtual ~SingularIdeal_wrap() { /* FIXME cout << "SingularIdeal destroyed" << endl; */ }
 
-   virtual void groebner(const Ring<> r, const Matrix<int> order) = 0;
+   virtual void groebner() = 0;
    
-   virtual int dim(const Ring<> r) = 0;
+   virtual int dim() = 0;
 
-   virtual SingularIdeal_wrap* radical(const Ring<> r) const = 0;
+   virtual SingularIdeal_wrap* radical() const = 0;
 
-   virtual Array<Polynomial<> > polynomials(const Ring<> r) const = 0;
+   virtual Array<Polynomial<> > polynomials(const Ring<>& r) const = 0;
    
-   static SingularIdeal_wrap* create(const Array<Polynomial<> > gens, const Matrix<int> order);
+   static SingularIdeal_wrap* create(const Array<Polynomial<> >& gens, const Matrix<int>& order);
 
-   static SingularIdeal_wrap* quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
+//   static SingularIdeal_wrap* quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
 };
 
 class SingularIdeal {
@@ -51,7 +51,7 @@ private:
    SingularIdeal_wrap* singIdeal;
 
 public:
-   SingularIdeal(const Array<Polynomial<> > gens, const Matrix<int> order) {
+   SingularIdeal(const Array<Polynomial<> >& gens, const Matrix<int>& order) {
       singIdeal = SingularIdeal_wrap::create(gens, order);
    }
 
@@ -59,19 +59,19 @@ public:
       singIdeal = sI;
    }
 
-   int dim(const Ring<> r) const  {
-      return singIdeal->dim(r);
+   int dim() const  {
+      return singIdeal->dim();
    }
 
-   void std(const Ring<> r, const Matrix<int> order) const  {
-      singIdeal->groebner(r, order);
+   void groebner() const  {
+      singIdeal->groebner();
    }
 
-   SingularIdeal radical(const Ring<> r) const  {
-      return SingularIdeal(singIdeal->radical(r));
+   SingularIdeal radical() const  {
+      return SingularIdeal(singIdeal->radical());
    }
    
-   Array<Polynomial<> > polynomials(const Ring<> r) const {
+   Array<Polynomial<> > polynomials(const Ring<>& r) const {
       return singIdeal->polynomials(r);
    }
    

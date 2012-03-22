@@ -21,5 +21,12 @@
 #include "polymake/Rational.h"
 namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
+   template <typename T0>
+   FunctionInterface4perl( radical_f1, T0 ) {
+      perl::Value arg0(stack[0]);
+      WrapperReturn( arg0.get<T0>().radical() );
+   };
+
+   FunctionInstance4perl(radical_f1, perl::Canned< const SingularIdeal >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }

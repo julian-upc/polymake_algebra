@@ -95,7 +95,7 @@ idhdl get_singular_function(std::string s) {
 // If the Singular ring does not exist, it is created and stored globally,
 // indirectly, since it is contained in the handle.
 // Also the idhdl of the ring is created here.
-ring check_ring(const Ring<> r, const Matrix<int> order){
+idhdl check_ring(const Ring<> r, const Matrix<int> order){
    Ring<>::id_type id = r.id();
    std::pair<Ring<>::id_type, Matrix<int> > p(id, order);
    if(!singular_ring_map.exists(p)){
@@ -121,17 +121,18 @@ ring check_ring(const Ring<> r, const Matrix<int> order){
    }
    // Make it the default ring, also for the interpeter
    rSetHdl(singular_ring_map[p]);
-   return currRing;
+   return singular_ring_map[p];
 }
 // If no monomial ordering is given:
-ring check_ring(const Ring<> r){
+idhdl check_ring(const Ring<> r){
    int nvars = r.n_vars();
    Matrix<int> ord = unit_matrix<int>(nvars);
    return check_ring(r, ord);
 }
 
-void check_ring(idhdl singRing) {
+idhdl check_ring(idhdl singRing) {
    rSetHdl(singRing);
+   return singRing;
 }
 
 // Convert a Singular number to a GMP rational.
@@ -167,7 +168,7 @@ number convert_Rational_to_number(const Rational& r)
    return nlInit2gmp(num,denom);
 }
 
-poly convert_Polynomial_to_poly(const Polynomial<> mypoly)
+poly convert_Polynomial_to_poly(const Polynomial<>& mypoly)
 {
    poly p = pISet(0);
    for(Entire<Polynomial<>::term_hash>::const_iterator term = entire(mypoly.get_terms()); !term.at_end(); ++term)
@@ -188,37 +189,43 @@ private:
    ::ideal singIdeal;
    idhdl singRing;
 
-public:
-  
-   // Constructing singIdeal from the generators:
-   SingularIdeal_impl(const Array<Polynomial<> > gens) 
-   {
-      if (!singular_initialized)
-         throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
-      //cout << "creating SingularIdeal_impl from Ideal" << endl;
-      // Get Singular ring:
-      ring singRing = check_ring(gens[0].get_ring());
+   void create_singIdeal(const Array<Polynomial<> >& gens) {
       int npoly = gens.size();
-      if(!npoly)
-         throw std::runtime_error("Ideal has no generators.");
-      
       singIdeal = idInit(npoly,1);
       int j = 0;
       // Converting monomials as described in libsing-test2.cc.
       for(Entire<Array<Polynomial<> > >::const_iterator mypoly = entire(gens); !mypoly.at_end(); ++mypoly, ++j) {
          poly p = convert_Polynomial_to_poly(*mypoly);
          //cout << "poly: " << p_String(p,singRing,singRing) << endl;
-         singIdeal->m[j]=p_Copy(p,singRing);
+         singIdeal->m[j]=p_Copy(p,currRing);
       }
-      //cout << "DONE CREATING singular object" << endl;
    }
 
-   SingularIdeal_impl(::ideal i)
+public:
+  
+   // Constructing singIdeal from the generators:
+   SingularIdeal_impl(const Array<Polynomial<> >& gens, const Matrix<int>& ord)
+   {
+      if (!singular_initialized)
+         throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
+      singRing = check_ring(gens[0].get_ring(),ord);
+      if(!gens.size())
+         throw std::runtime_error("Ideal has no generators.");
+      create_singIdeal(gens);
+   }
+   
+   SingularIdeal_impl(const Array<Polynomial<> >& gens, idhdl r){
+      singRing = check_ring(r);
+      create_singIdeal(gens);
+   }
+
+   SingularIdeal_impl(::ideal i, idhdl r)
    {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
       //cout << "creating SingularIdeal_impl from singular stuff" << endl;
       singIdeal=i;
+      singRing=r;
    }
 
    ~SingularIdeal_impl() 
@@ -235,31 +242,31 @@ public:
    }
 
    // Compute a groebner basis of a Polymake ideal using Singular
-   void groebner(const Ring<> r, const Matrix<int> order) 
+   void groebner() 
    {
-      ring singRing = check_ring(r, order); 
+      check_ring(singRing); 
 
       ::ideal res;
       res = kStd(singIdeal,NULL,testHomog,NULL);
       //cout << "DONE COMPUTING std basis" << endl;
-      id_Delete(&singIdeal,singRing);
+      id_Delete(&singIdeal,currRing);
       singIdeal = res;
    }
 
    // Compute the dimension of an ideal.
-   int dim(const Ring<> r) {
+   int dim() {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
-      check_ring(r); 
+      check_ring(singRing); 
       return scDimInt(singIdeal, NULL);
    }
    
    // Compute the radical of an ideal using primdec.lib from Singular
-   SingularIdeal_wrap* radical(const Ring<> r) const {
+   SingularIdeal_wrap* radical() const {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
 
-      ring singRing = check_ring(r); 
+      check_ring(singRing); 
       sleftv arg;
       memset(&arg,0,sizeof(arg));
 
@@ -273,19 +280,20 @@ public:
          errorreported = 0;
          throw std::runtime_error("radical returned an error");
       }
-      return new SingularIdeal_impl((::ideal) (res->Data()));
+      return new SingularIdeal_impl((::ideal) (res->Data()), singRing);
    }
 
    // Converting singIdeal generators to an array of Polymake polynomials.
-   Array<Polynomial<> > polynomials(const Ring<> r) const
+   Array<Polynomial<> > polynomials(const Ring<>& r) const
    {
-      ring singRing = check_ring(r); 
-      rChangeCurrRing(singRing);
+      check_ring(singRing);
+//      ring singRing = check_ring(r); 
+//      rChangeCurrRing(singRing);
 
       int numgen = IDELEMS(singIdeal);
       std::vector<Polynomial<> > polys;
 
-      int n = rVar(singRing);
+      int n = rVar(currRing);
       for(int j = 0; j<numgen; j++) {
          if(singIdeal->m[j] != NULL){
             ListMatrix<Vector<int> > exponents(0,n);
@@ -293,7 +301,7 @@ public:
             std::vector<Rational> coefficients;
             while(p != NULL){
                number c = pGetCoeff(p);
-               coefficients.push_back(convert_number_to_Rational(c, singRing));
+               coefficients.push_back(convert_number_to_Rational(c, currRing));
                Vector<int> monomial(n);
                for(int i = 1; i<=n; i++){
                   monomial[i-1] = pGetExp(p, i);
@@ -308,21 +316,23 @@ public:
       return Array<Polynomial<> >(polys);
    }
    
-   friend SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J);
+   static SingularIdeal_impl* quotient(const SingularIdeal_impl* I, const SingularIdeal_impl* J);
 };
 
-SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
-   const ::ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
-   const ::ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
+SingularIdeal_impl* SingularIdeal_impl::quotient(const SingularIdeal_impl* I, const SingularIdeal_impl* J){
+/*   const SingularIdeal_impl* Iimpl = static_cast<const SingularIdeal_impl*>(I);
+   const SingularIdeal_impl* Jimpl = static_cast<const SingularIdeal_impl*>(J);
+   const ::ideal sI = Iimpl->singIdeal;
+   const ::ideal sJ = Jimpl->singIdeal;*/
    // The first true indicates, that we receive a standard basis of I,
    // the second one that we want the output to be an ideal.
-   ::ideal quot = idQuot(sI, sJ, true, true);
-   return new SingularIdeal_impl(quot);
+   ::ideal quot = idQuot(I->singIdeal, J->singIdeal, true, true);
+   return new SingularIdeal_impl(quot,I->singRing);
 }
 
-SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens, Matrix<int> order) 
+SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> >& gens, const Matrix<int>& ord) 
 {
-   return new SingularIdeal_impl(gens);
+   return new SingularIdeal_impl(gens,ord);
 }
 
 perl::Object quotient(perl::Object I, perl::Object J)
@@ -336,19 +346,21 @@ perl::Object quotient(perl::Object I, perl::Object J)
 
    check_ring(ri);
    
-   // FIXME which one should be STANDARD ?
-   const Array<Polynomial<> > gensI = I.give("STANDARD");
-   const Array<Polynomial<> > gensJ = J.give("STANDARD | GENERATORS");
-   
-   SingularIdeal_impl wrapI(gensI);
-   SingularIdeal_impl wrapJ(gensJ);
+   const Array<Polynomial<> > gensI = I.give("GROEBNER.GROEBNER_BASIS");
+   const Matrix<int> ord = I.give("GROEBNER.MONOMIAL_ORDERING");
+   const idhdl sri = check_ring(ri,ord);
 
-   SingularIdeal_wrap* quotwrap = SingularIdeal_wrap::quotient(&wrapI,&wrapJ);
+const Array<Polynomial<> > gensJ = J.give("GENERATORS");
+   
+   SingularIdeal_impl implI(gensI,sri);
+   SingularIdeal_impl implJ(gensJ,sri);
+
+   SingularIdeal_impl* quotimpl = SingularIdeal_impl::quotient(&implI,&implJ);
 
    perl::Object res("Ideal");
    res.take("RING") << ri;
-   res.take("GENERATORS") << quotwrap->polynomials(ri);
-   delete quotwrap;
+   res.take("GENERATORS") << quotimpl->polynomials(ri);
+   delete quotimpl;
    return res;
 }
 
