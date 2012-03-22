@@ -35,7 +35,7 @@ namespace polymake { namespace ideal {
 int singular_initialized = 0;
 
 // Mapping Polymake rings to their Singular handles.
-Map<Ring<>::id_type, idhdl> singular_ring_map;
+Map<Pair<Ring<>::id_type, Matrix<> >, idhdl> singular_ring_map;
 // Storing the handles for the Singular functions globally.
 Map<std::string, idhdl> singular_function_map;
 
@@ -94,9 +94,10 @@ idhdl get_singular_function(std::string s) {
 // If the Singular ring does not exist, it is created and stored globally,
 // indirectly, since it is contained in the handle.
 // Also the idhdl of the ring is created here.
-ring check_ring(Ring<> r){
+ring check_ring(const Ring<> r, const Matrix<int> order){
    Ring<>::id_type id = r.id();
-   if(!singular_ring_map.exists(id)){
+   Pair<Ring<>::id_type, Matrix<> > p(id, order);
+   if(!singular_ring_map.exists(p)){
       int nvars = r.n_vars();
       if(nvars == 0) 
          throw std::runtime_error("Given ring is not a polynomial ring.");
@@ -114,12 +115,18 @@ ring check_ring(Ring<> r){
       idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
       IDRING(newRingHdl)=r;
       // Store handle:
-      singular_ring_map[id] = newRingHdl;
+      singular_ring_map[p] = newRingHdl;
 
    }
    // Make it the default ring, also for the interpeter
-   rSetHdl(singular_ring_map[id]);
+   rSetHdl(singular_ring_map[p]);
    return currRing;
+}
+// If no monomial ordering is given:
+ring check_ring(const Ring<> r){
+   int nvars = r.n_vars();
+   Matrix<int> ord = unit_matrix<int>(nvars);
+   return check_ring(r, ord);
 }
 
 // Convert a Singular number to a GMP rational.
