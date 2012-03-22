@@ -13,12 +13,24 @@
    GNU General Public License for more details.
 */
 
-///==== this line controls the automatic file splitting: max.instances=40
+#ifndef POLYMAKE_APP_WRAPPERS_ideal_singular_H
+#define POLYMAKE_APP_WRAPPERS_ideal_singular_H 
 
+#include_next "polymake/ideal/singular.h"
 #include "polymake/client.h"
-#include "polymake/ideal/singular.h"
-namespace polymake { namespace ideal {
+
+namespace polymake { namespace perl_bindings {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   Class4perl("Polymake::ideal::SingularIdeal", SingularIdeal);
+   template <typename T>
+   RecognizeType4perl("Polymake::ideal::SingularIdeal", (), polymake::ideal::SingularIdeal)
+
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }
+
+#endif // POLYMAKE_APP_WRAPPERS_ideal_singular_H
+
+// Local Variables:
+// mode:C++
+// c-basic-offset:3
+// indent-tabs-mode:nil
+// End:

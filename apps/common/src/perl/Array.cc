@@ -16,9 +16,11 @@
 ///==== this line controls the automatic file splitting: max.instances=40
 
 #include "polymake/client.h"
-#include "polymake/ideal/singular.h"
-namespace polymake { namespace ideal {
+#include "polymake/Array.h"
+#include "polymake/Polynomial.h"
+#include "polymake/Rational.h"
+namespace polymake { namespace common {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   Class4perl("Polymake::ideal::SingularIdeal", SingularIdeal);
+   Class4perl("Polymake::common::Array__Polynomial_A_Rational_I_Int_Z", Array< Polynomial< Rational, int > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }

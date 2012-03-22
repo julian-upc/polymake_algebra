@@ -72,7 +72,7 @@ object Ideal {
 
       property INITIAL_IDEAL : Ideal;
 
-      property MONOMIAL_ORDERING : Matrix;
+      property MONOMIAL_ORDERING : Matrix<Int>;
 
    }
 

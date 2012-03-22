@@ -24,6 +24,7 @@
 #include "polymake/ListMatrix.h"
 #include "polymake/Map.h"
 #include "polymake/Ring.h"
+#include "polymake/pair.h"
 
 #include <libsingular.h>
 #include "singular/stairc.h"
@@ -35,7 +36,7 @@ namespace polymake { namespace ideal {
 int singular_initialized = 0;
 
 // Mapping Polymake rings to their Singular handles.
-Map<Pair<Ring<>::id_type, Matrix<> >, idhdl> singular_ring_map;
+Map<std::pair<Ring<>::id_type, Matrix<int> >, idhdl> singular_ring_map;
 // Storing the handles for the Singular functions globally.
 Map<std::string, idhdl> singular_function_map;
 
@@ -96,7 +97,7 @@ idhdl get_singular_function(std::string s) {
 // Also the idhdl of the ring is created here.
 ring check_ring(const Ring<> r, const Matrix<int> order){
    Ring<>::id_type id = r.id();
-   Pair<Ring<>::id_type, Matrix<> > p(id, order);
+   std::pair<Ring<>::id_type, Matrix<int> > p(id, order);
    if(!singular_ring_map.exists(p)){
       int nvars = r.n_vars();
       if(nvars == 0) 
@@ -127,6 +128,10 @@ ring check_ring(const Ring<> r){
    int nvars = r.n_vars();
    Matrix<int> ord = unit_matrix<int>(nvars);
    return check_ring(r, ord);
+}
+
+void check_ring(idhdl singRing) {
+   rSetHdl(singRing);
 }
 
 // Convert a Singular number to a GMP rational.
@@ -181,6 +186,7 @@ poly convert_Polynomial_to_poly(const Polynomial<> mypoly)
 class SingularIdeal_impl : public SingularIdeal_wrap {
 private:
    ::ideal singIdeal;
+   idhdl singRing;
 
 public:
   
@@ -229,9 +235,9 @@ public:
    }
 
    // Compute a groebner basis of a Polymake ideal using Singular
-   void std(const Ring<> r) 
+   void groebner(const Ring<> r, const Matrix<int> order) 
    {
-      ring singRing = check_ring(r); 
+      ring singRing = check_ring(r, order); 
 
       ::ideal res;
       res = kStd(singIdeal,NULL,testHomog,NULL);
@@ -314,7 +320,7 @@ SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, co
    return new SingularIdeal_impl(quot);
 }
 
-SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens) 
+SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> > gens, Matrix<int> order) 
 {
    return new SingularIdeal_impl(gens);
 }

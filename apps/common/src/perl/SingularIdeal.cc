@@ -15,10 +15,7 @@
 
 ///==== this line controls the automatic file splitting: max.instances=40
 
-#include "polymake/client.h"
-#include "polymake/ideal/singular.h"
-namespace polymake { namespace ideal {
+namespace polymake { namespace common {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   Class4perl("Polymake::ideal::SingularIdeal", SingularIdeal);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }
