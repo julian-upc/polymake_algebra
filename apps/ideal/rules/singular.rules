@@ -34,35 +34,29 @@ CONFIGURE_BUILD {
   return ( SingularPath   => $singular_path );
 }
 
-declare property_type SingularIdeal : c++ (include => ["polymake/ideal/singular.h"]) {
-#property_type SingularIdeal {
+object Groebner {
 
-   method construct(Array<Polynomial>) : c++;
-   
-   method std(Ring) : void : c++ ;
-   
-   method dim(Ring) : c++ ;
+   declare property_type SingularIdeal : c++ (include => ["polymake/ideal/singular.h"]) {
 
-   method radical(Ring) : c++ ;
+      method construct(Array<Polynomial>) : c++;
+      
+      method std(Ring) : void : c++ ;
+      
+      method dim(Ring) : c++ ;
 
-   method polynomials(Ring) : c++;
+      method radical(Ring) : c++ ;
 
-}
+      method polynomials(Ring) : c++;
 
-object Ideal {
+   }
 
    property SINGULAR_IDEAL : SingularIdeal;
 
-   rule SINGULAR_IDEAL : GROEBNER.GROEBNER_BASIS | GENERATORS {
-      $this->SINGULAR_IDEAL = new SingularIdeal($this->GROEBNER->GROEBNER_BASIS | GENERATORS);
-   }
-   precondition : !ZERO;
-
-   rule DIM : GROEBNER.GROEBNER_BASIS, SINGULAR_IDEAL, RING {
+   rule DIM : GROEBNER_BASIS, SINGULAR_IDEAL, RING {
       $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
    }
 
-   rule GROEBNER.GROEBNER_BASIS : SINGULAR_IDEAL, RING {
+   rule GROEBNER_BASIS : SINGULAR_IDEAL, RING {
       $this->SINGULAR_IDEAL->std($this->RING);
       $this->GROEBNER->GROEBNER_BASIS = $this->SINGULAR_IDEAL->polynomials($this->RING);
    }
@@ -73,3 +67,11 @@ object Ideal {
    }
 }
 
+object Ideal {
+
+   rule GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.MONOMIAL_ORDERING {
+      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
+   }
+   precondition : !ZERO;
+
+}
