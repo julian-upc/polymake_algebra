@@ -21,6 +21,5 @@
 #include "polymake/Rational.h"
 namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   Class4perl("Polymake::ideal::Array__Polynomial_A_Rational_I_Int_Z", Array< Polynomial< Rational, int > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }

@@ -20,12 +20,5 @@
 #include "polymake/Rational.h"
 namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   template <typename T0>
-   FunctionInterface4perl( trivial_f1, T0 ) {
-      perl::Value arg0(stack[0]);
-      WrapperReturn( arg0.get<T0>().trivial() );
-   };
-
-   FunctionInstance4perl(trivial_f1, perl::Canned< const Polynomial< Rational, int > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }

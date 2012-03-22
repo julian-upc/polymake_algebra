@@ -43,7 +43,7 @@ $i = new Ideal(GENERATORS=>[$p1,$p2]);
 \end{verbatim}
 Properties working:
 \begin{enumerate}
-\item STANDARD: Computes a standard basis of the ideal. So far we assume a global ordering on the ring of polynomials. No other rings or orderings can be accessed, yet.
+\item GROEBNER: Computes a standard basis of the ideal. So far we assume a global ordering on the ring of polynomials. No other rings or orderings can be accessed, yet.
 \item RADICAL: Computes the radical of the ideal.
 \item DIM: Computes the dimension of the ideal. So far I have no idea what the output means.
 \end{enumerate}
@@ -53,4 +53,6 @@ Polymake allows negative exponents.
 Singular allows different monomial orderings. So far we are only using one.
 
 Rings should be able to have a grading other than the trivial one.
+
+Application has the same name as type ideal in singular.
 \end{document}

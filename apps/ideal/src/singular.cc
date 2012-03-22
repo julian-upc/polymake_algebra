@@ -173,7 +173,7 @@ poly convert_Polynomial_to_poly(const Polynomial<> mypoly)
 
 class SingularIdeal_impl : public SingularIdeal_wrap {
 private:
-   ideal singIdeal;
+   ::ideal singIdeal;
 
 public:
   
@@ -200,7 +200,7 @@ public:
       //cout << "DONE CREATING singular object" << endl;
    }
 
-   SingularIdeal_impl(ideal i)
+   SingularIdeal_impl(::ideal i)
    {
       if (!singular_initialized)
          throw std::runtime_error("singular not yet initialized, call init_singular(Path)");
@@ -226,7 +226,7 @@ public:
    {
       ring singRing = check_ring(r); 
 
-      ideal res;
+      ::ideal res;
       res = kStd(singIdeal,NULL,testHomog,NULL);
       //cout << "DONE COMPUTING std basis" << endl;
       id_Delete(&singIdeal,singRing);
@@ -260,7 +260,7 @@ public:
          errorreported = 0;
          throw std::runtime_error("radical returned an error");
       }
-      return new SingularIdeal_impl((ideal) (res->Data()));
+      return new SingularIdeal_impl((::ideal) (res->Data()));
    }
 
    // Converting singIdeal generators to an array of Polymake polynomials.
@@ -299,11 +299,11 @@ public:
 };
 
 SingularIdeal_wrap* SingularIdeal_wrap::quotient(const SingularIdeal_wrap* I, const SingularIdeal_wrap* J){
-   const ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
-   const ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
+   const ::ideal sI = static_cast<const SingularIdeal_impl*>(I)->singIdeal;
+   const ::ideal sJ = static_cast<const SingularIdeal_impl*>(J)->singIdeal;
    // The first true indicates, that we receive a standard basis of I,
    // the second one that we want the output to be an ideal.
-   ideal quot = idQuot(sI, sJ, true, true);
+   ::ideal quot = idQuot(sI, sJ, true, true);
    return new SingularIdeal_impl(quot);
 }
 
