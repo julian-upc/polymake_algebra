@@ -19,7 +19,8 @@
 
 
 CREDIT Singular
-  blaaaa
+  Singular is a computer algebra system for polynomial computations, with special emphasis on commutative and non-commutative algebra, algebraic geometry, and singularity theory. It is free and open-source under the GNU General Public Licence.
+  http://www.singular.uni-kl.de/
 
 # path to the root installation directory of libsingular
 custom $singular_path;
@@ -40,7 +41,7 @@ object Groebner {
 
       method construct(Array<Polynomial>, Matrix<Int>) : c++;
       
-      method std(Ring) : void : c++ ;
+      method groebner(Ring) : void : c++ ;
       
       method dim(Ring) : c++ ;
 
@@ -66,7 +67,7 @@ object Ideal {
    }
 
    rule GROEBNER.GROEBNER_BASIS : GROEBNER.SINGULAR_IDEAL, RING {
-      $this->GROEBNER->SINGULAR_IDEAL->std($this->RING);
+      $this->GROEBNER->SINGULAR_IDEAL->groebner($this->RING);
       $this->GROEBNER->GROEBNER_BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
    }
 
