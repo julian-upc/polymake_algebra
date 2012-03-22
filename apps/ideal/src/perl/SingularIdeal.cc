@@ -16,11 +16,11 @@
 ///==== this line controls the automatic file splitting: max.instances=40
 
 #include "polymake/client.h"
-#include "polymake/common/singular.h"
+#include "polymake/ideal/singular.h"
 #include "polymake/Array.h"
 #include "polymake/Polynomial.h"
 #include "polymake/Rational.h"
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1>
    FunctionInterface4perl( new_X, T0,T1 ) {
@@ -28,7 +28,7 @@ namespace polymake { namespace common {
       WrapperReturnNew(T0, (arg0.get<T1>()) );
    };
 
-   Class4perl("Polymake::common::SingularIdeal", SingularIdeal);
+   Class4perl("Polymake::ideal::SingularIdeal", SingularIdeal);
    FunctionInstance4perl(new_X, SingularIdeal, perl::Canned< const Array< Polynomial< Rational, int > > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }

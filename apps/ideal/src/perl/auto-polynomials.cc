@@ -16,10 +16,10 @@
 ///==== this line controls the automatic file splitting: max.instances=40
 
 #include "polymake/client.h"
-#include "polymake/common/singular.h"
+#include "polymake/ideal/singular.h"
 #include "polymake/Ring.h"
 #include "polymake/Rational.h"
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1>
    FunctionInterface4perl( polynomials_X_f1, T0,T1 ) {

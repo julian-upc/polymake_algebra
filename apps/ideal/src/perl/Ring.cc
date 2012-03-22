@@ -18,7 +18,7 @@
 #include "polymake/client.h"
 #include "polymake/Ring.h"
 #include "polymake/Rational.h"
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1>
    FunctionInterface4perl( new_X, T0,T1 ) {

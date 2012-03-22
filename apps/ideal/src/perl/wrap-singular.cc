@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 */
 
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    FunctionWrapper4perl( void (std::string const&) ) {
       perl::Value arg0(stack[0]);

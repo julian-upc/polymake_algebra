@@ -24,7 +24,7 @@
 #include "polymake/Polynomial.h"
 #include "polymake/internal/shared_object.h"
 
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 
 class SingularIdeal;
 

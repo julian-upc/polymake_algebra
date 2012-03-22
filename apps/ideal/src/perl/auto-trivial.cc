@@ -18,7 +18,7 @@
 #include "polymake/client.h"
 #include "polymake/Polynomial.h"
 #include "polymake/Rational.h"
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0>
    FunctionInterface4perl( trivial_f1, T0 ) {

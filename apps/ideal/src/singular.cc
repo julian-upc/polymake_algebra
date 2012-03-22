@@ -20,7 +20,7 @@
 
 
 #include "polymake/client.h"
-#include "polymake/common/singular.h"
+#include "polymake/ideal/singular.h"
 #include "polymake/ListMatrix.h"
 #include "polymake/Map.h"
 #include "polymake/Ring.h"
@@ -28,7 +28,7 @@
 #include <libsingular.h>
 #include "singular/stairc.h"
 
-namespace polymake { namespace common {
+namespace polymake { namespace ideal {
 
 //namespace {
 

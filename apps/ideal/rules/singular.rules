@@ -34,7 +34,7 @@ CONFIGURE_BUILD {
   return ( SingularPath   => $singular_path );
 }
 
-declare property_type SingularIdeal : c++ (include => ["polymake/common/singular.h"]) {
+declare property_type SingularIdeal : c++ (include => ["polymake/ideal/singular.h"]) {
 #property_type SingularIdeal {
 
    method construct(Array<Polynomial>) : c++;
