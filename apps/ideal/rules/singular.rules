@@ -38,7 +38,7 @@ object Groebner {
 
    declare property_type SingularIdeal : c++ (include => ["polymake/ideal/singular.h"]) {
 
-      method construct(Array<Polynomial>) : c++;
+      method construct(Array<Polynomial>, Matrix<Int>) : c++;
       
       method std(Ring) : void : c++ ;
       
@@ -52,19 +52,6 @@ object Groebner {
 
    property SINGULAR_IDEAL : SingularIdeal;
 
-   rule DIM : GROEBNER_BASIS, SINGULAR_IDEAL, RING {
-      $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
-   }
-
-   rule GROEBNER_BASIS : SINGULAR_IDEAL, RING {
-      $this->SINGULAR_IDEAL->std($this->RING);
-      $this->GROEBNER->GROEBNER_BASIS = $this->SINGULAR_IDEAL->polynomials($this->RING);
-   }
-
-   rule RADICAL : SINGULAR_IDEAL, RING {
-      my $si = $this->SINGULAR_IDEAL->radical($this->RING);
-      $this->RADICAL = new Ideal(GENERATORS=>$si->polynomials($this->RING));
-   }
 }
 
 object Ideal {
@@ -74,4 +61,17 @@ object Ideal {
    }
    precondition : !ZERO;
 
+   rule DIM : GROEBNER.GROEBNER_BASIS, SINGULAR_IDEAL, RING {
+      $this->DIM = $this->SINGULAR_IDEAL->dim($this->RING);
+   }
+
+   rule GROEBNER.GROEBNER_BASIS : GROEBNER.SINGULAR_IDEAL, RING {
+      $this->GROEBNER->SINGULAR_IDEAL->std($this->RING);
+      $this->GROEBNER->GROEBNER_BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
+   }
+
+   rule RADICAL : GROEBNER.SINGULAR_IDEAL, RING {
+      my $si = $this->GROEBNER->SINGULAR_IDEAL->radical($this->RING);
+      $this->RADICAL = new Ideal(GENERATORS=>$si->polynomials($this->RING));
+   }
 }
