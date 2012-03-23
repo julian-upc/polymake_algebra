@@ -69,8 +69,13 @@ object Ideal {
       $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
    }
 
-   rule DIM : GROEBNER.SINGULAR_IDEAL {
-      $this->DIM = $this->GROEBNER->SINGULAR_IDEAL->dim();
+   rule DIM : RING {
+      my $si;
+      unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
+         warn "using temporary GROEBNER object with default ordering";
+         $si = $this->GROEBNER(MONOMIAL_ORDERING=>unit_matrix($this->RING->names->size),temporary)->SINGULAR_IDEAL; #FIXME ordering
+      }
+      $this->DIM = $si->dim();
    }
 
 
