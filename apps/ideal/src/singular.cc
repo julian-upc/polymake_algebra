@@ -346,7 +346,7 @@ perl::Object quotient(perl::Object I, perl::Object J)
 
    check_ring(ri);
    
-   const Array<Polynomial<> > gensI = I.give("GROEBNER.GROEBNER_BASIS");
+   const Array<Polynomial<> > gensI = I.give("GROEBNER.BASIS");
    const Matrix<int> ord = I.give("GROEBNER.MONOMIAL_ORDERING");
    const idhdl sri = check_ring(ri,ord);
 
