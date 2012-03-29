@@ -57,23 +57,23 @@ object Groebner {
 
 object Ideal {
 
-   rule GROEBNER.BASIS, GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.MONOMIAL_ORDERING , RING {
-      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
+   rule GROEBNER.BASIS, GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.ORDER_MATRIX , RING {
+      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->ORDER_MATRIX);
       $this->GROEBNER->SINGULAR_IDEAL->groebner();
       $this->GROEBNER->BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
    }
    precondition : !ZERO;
 
    
-   rule GROEBNER.SINGULAR_IDEAL : GROEBNER.BASIS , GROEBNER.MONOMIAL_ORDERING {
-      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->MONOMIAL_ORDERING);
+   rule GROEBNER.SINGULAR_IDEAL : GROEBNER.BASIS , GROEBNER.ORDER_MATRIX {
+      $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->ORDER_MATRIX);
    }
 
    rule DIM : RING {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
-         warn "using temporary GROEBNER object with default ordering";
-         $si = $this->GROEBNER(MONOMIAL_ORDERING=>unit_matrix($this->RING->names->size),temporary)->SINGULAR_IDEAL; #FIXME ordering
+         warn "automatically creating new GROEBNER object with lex ordering";
+         $si = $this->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL; #FIXME ordering
       }
       $this->DIM = $si->dim();
    }
@@ -82,8 +82,8 @@ object Ideal {
    rule RADICAL : RING {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
-         warn "using temporary GROEBNER object with default ordering";
-         $si = $this->GROEBNER(MONOMIAL_ORDERING=>unit_matrix($this->RING->names->size),temporary)->SINGULAR_IDEAL; #FIXME ordering
+         warn "automatically creating new GROEBNER object with lex ordering";
+         $si = $this->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL; #FIXME ordering
       }
       my $radical = $si->radical();
       $this->RADICAL = new Ideal(GENERATORS=>$radical->polynomials($this->RING),RING=>$this->RING);

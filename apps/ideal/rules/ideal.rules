@@ -35,34 +35,9 @@ object Ideal {
 		return 1;
 	}
 
-	rule PRIMARY : {
-		$this->PRIMARY = 1;
-	}
-	precondition : PRIME;
-
-
 	rule PRIMARY : RADICAL.PRIME {
 		$this->PRIMARY = $this->RADICAL->PRIME;
 	}
-
-	rule ZERO : GENERATORS {
-      my $gens = $this->GENERATORS;
-		if($gens->size != 0){
-			foreach my $p (@{$gens}){
-				if(!$p->trivial){
-					$this->ZERO = 0;
-					return;
-				}
-			}
-		} 
-		$this->ZERO = 1;
-	}
-
-	rule RING : GENERATORS {
-      my $gens = $this->GENERATORS;
-		$this->RING = $gens->[0]->get_ring;
-	}
-	precondition : !ZERO;
 
 }
 

@@ -22,6 +22,7 @@
 #include "polymake/Rational.h"
 #include "polymake/Matrix.h"
 #include "polymake/IncidenceMatrix.h"
+#include "polymake/SparseMatrix.h"
 namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1, typename T2>
@@ -32,5 +33,6 @@ namespace polymake { namespace ideal {
 
    Class4perl("Polymake::ideal::SingularIdeal", SingularIdeal);
    FunctionInstance4perl(new_X_X, SingularIdeal, perl::Canned< const Array< Polynomial< Rational, int > > >, perl::Canned< const Matrix< int > >);
+   FunctionInstance4perl(new_X_X, SingularIdeal, perl::Canned< const Array< Polynomial< Rational, int > > >, perl::Canned< const SparseMatrix< int, NonSymmetric > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }
