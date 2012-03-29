@@ -33,7 +33,8 @@ namespace polymake { namespace ideal {
 
 namespace {
 
-int singular_initialized = 0;
+bool singular_initialized = 0;
+unsigned int ringidcounter = 0;
 
 // Mapping Polymake rings to their Singular handles.
 Map<std::pair<Ring<>::id_type, Matrix<int> >, idhdl> singular_ring_map;
@@ -130,7 +131,7 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
       // Create Singular ring:
       ring r = rDefault(0,nvars,n,ord_size,ord,block0,block1,wvhdl);
       char* ringid = (char*) malloc(2+sizeof(unsigned int));
-      sprintf(ringid,"R-%0u",id);
+      sprintf(ringid,"R-%0u",ringidcounter++); 
       // Create handle for ring:
       idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
       IDRING(newRingHdl)=r;
