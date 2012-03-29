@@ -111,8 +111,24 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
       {
          n[i] = omStrDup(r.names()[i].c_str());
       }
+      int ord_size = 2;
+      int *ord = (int*)omalloc0((ord_size+1)*sizeof(int));
+      int *block0 = (int*)omalloc0((ord_size+1)*sizeof(int));
+      int *block1 = (int*)omalloc0((ord_size+1)*sizeof(int));
+      ord[0] = ringorder_M;
+      ord[1] = ringorder_c;
+      block0[0] = 1;
+      block1[0] = nvars;
+      int **wvhdl = (int**)omalloc0((ord_size+1)*sizeof(int));
+      wvhdl[0] = (int*)omalloc0(nvars*nvars*sizeof(int));
+      for(int i =0; i<nvars; i++){
+         for(int j = 0; j<nvars; j++){
+            wvhdl[0][i*nvars+j] = order(i,j);
+         }
+      }
+      cout << "Monomial ordering written to Singular." << endl;
       // Create Singular ring:
-      ring r = rDefault(0,nvars,n);
+      ring r = rDefault(0,nvars,n,ord_size,ord,block0,block1,wvhdl);
       char* ringid = (char*) malloc(2+sizeof(unsigned int));
       sprintf(ringid,"R-%0u",id);
       // Create handle for ring:
@@ -126,6 +142,7 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
    rSetHdl(singular_ring_map[p]);
    return singular_ring_map[p];
 }
+
 // If no monomial ordering is given:
 idhdl check_ring(const Ring<> r){
    int nvars = r.n_vars();
