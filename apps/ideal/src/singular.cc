@@ -108,6 +108,55 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
       {
          n[i] = omStrDup(r.names()[i].c_str());
       }
+      int ord_size = 2;
+      int *ord = (int*)omalloc0((ord_size+1)*sizeof(int));
+      int *block0 = (int*)omalloc0((ord_size+1)*sizeof(int));
+      int *block1 = (int*)omalloc0((ord_size+1)*sizeof(int));
+      ord[0] = ringorder_M;
+      ord[1] = ringorder_c;
+      block0[0] = 1;
+      block1[0] = nvars;
+      int **wvhdl = (int**)omalloc0((ord_size+1)*sizeof(int));
+      wvhdl[0] = (int*)omalloc0(nvars*nvars*sizeof(int));
+      for(int i =0; i<nvars; i++){
+         for(int j = 0; j<nvars; j++){
+            wvhdl[0][i*nvars+j] = order(i,j);
+         }
+      }
+      cout << "Monomial ordering written to Singular." << endl;
+      // Create Singular ring:
+      ring r = rDefault(0,nvars,n,ord_size,ord,block0,block1,wvhdl);
+      char* ringid = (char*) malloc(2+sizeof(unsigned int));
+      sprintf(ringid,"R-%0u",id);
+      // Create handle for ring:
+      idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
+      IDRING(newRingHdl)=r;
+      // Store handle:
+      singular_ring_map[p] = newRingHdl;
+
+   }
+   // Make it the default ring, also for the interpeter
+   rSetHdl(singular_ring_map[p]);
+   return singular_ring_map[p];
+}
+
+// Returns the Singular equivalent for a Polymake ring.
+// If the Singular ring does not exist, it is created and stored globally,
+// indirectly, since it is contained in the handle.
+// Also the idhdl of the ring is created here.
+/*idhdl check_ring(const Ring<> r, const Matrix<int> order){
+   Ring<>::id_type id = r.id();
+   std::pair<Ring<>::id_type, Matrix<int> > p(id, order);
+   if(!singular_ring_map.exists(p)){
+      int nvars = r.n_vars();
+      if(nvars == 0) 
+         throw std::runtime_error("Given ring is not a polynomial ring.");
+      // Create variables:
+      char **n=(char**)omalloc(nvars*sizeof(char*));
+      for(int i=0; i<nvars; i++)
+      {
+         n[i] = omStrDup(r.names()[i].c_str());
+      }
       // Create Singular ring:
       ring r = rDefault(0,nvars,n);
       char* ringid = (char*) malloc(2+sizeof(unsigned int));
@@ -122,7 +171,7 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
    // Make it the default ring, also for the interpeter
    rSetHdl(singular_ring_map[p]);
    return singular_ring_map[p];
-}
+}*/
 // If no monomial ordering is given:
 idhdl check_ring(const Ring<> r){
    int nvars = r.n_vars();
