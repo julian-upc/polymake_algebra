@@ -22,12 +22,5 @@
 #include "polymake/Rational.h"
 namespace polymake { namespace common {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
-   template <typename T0, typename T1>
-   FunctionInterface4perl( new_X, T0,T1 ) {
-      perl::Value arg0(stack[1]);
-      WrapperReturnNew(T0, (arg0.get<T1>()) );
-   };
-
-   FunctionInstance4perl(new_X, Matrix< int >, perl::Canned< const pm::DiagMatrix<pm::SameElementVector<pm::Rational const&>, true> >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }
