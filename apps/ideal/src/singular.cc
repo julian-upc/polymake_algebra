@@ -140,38 +140,6 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
    return singular_ring_map[p];
 }
 
-// Returns the Singular equivalent for a Polymake ring.
-// If the Singular ring does not exist, it is created and stored globally,
-// indirectly, since it is contained in the handle.
-// Also the idhdl of the ring is created here.
-/*idhdl check_ring(const Ring<> r, const Matrix<int> order){
-   Ring<>::id_type id = r.id();
-   std::pair<Ring<>::id_type, Matrix<int> > p(id, order);
-   if(!singular_ring_map.exists(p)){
-      int nvars = r.n_vars();
-      if(nvars == 0) 
-         throw std::runtime_error("Given ring is not a polynomial ring.");
-      // Create variables:
-      char **n=(char**)omalloc(nvars*sizeof(char*));
-      for(int i=0; i<nvars; i++)
-      {
-         n[i] = omStrDup(r.names()[i].c_str());
-      }
-      // Create Singular ring:
-      ring r = rDefault(0,nvars,n);
-      char* ringid = (char*) malloc(2+sizeof(unsigned int));
-      sprintf(ringid,"R-%0u",id);
-      // Create handle for ring:
-      idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
-      IDRING(newRingHdl)=r;
-      // Store handle:
-      singular_ring_map[p] = newRingHdl;
-
-   }
-   // Make it the default ring, also for the interpeter
-   rSetHdl(singular_ring_map[p]);
-   return singular_ring_map[p];
-}*/
 // If no monomial ordering is given:
 idhdl check_ring(const Ring<> r){
    int nvars = r.n_vars();
