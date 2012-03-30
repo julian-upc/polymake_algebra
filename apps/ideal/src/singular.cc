@@ -311,15 +311,17 @@ public:
       memset(&arg,0,sizeof(arg));
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)idCopy(singIdeal);
-      // call radical
+      // call primdecGTZ
       leftv res=iiMake_proc(primdecGTZ,NULL,&arg);
       if(res->Typ() == LIST_CMD){
          lists L = (lists)res->Data();
-         lists LL = (lists)L->m[0].Data();
-         Array<SingularIdeal_wrap*> result(LL->nr+1);
-         for(int j=0; j<=LL->nr; j++){
-            if(LL->m[j].Typ() == IDEAL_CMD){
-               result[j] = new SingularIdeal_impl((::ideal) (LL->m[j].Data()),singRing);
+         cout << L->nr << endl;
+         Array<SingularIdeal_wrap*> result(L->nr+1);
+         for(int j=0; j<=L->nr; j++){
+            lists LL = (lists)L->m[j].Data();
+            cout << LL->nr << endl;
+            if(LL->m[0].Typ() == IDEAL_CMD){
+               result[j] = new SingularIdeal_impl((::ideal) (LL->m[0].Data()),singRing);
             } else {
                throw std::runtime_error("Something went wrong for the primary decomposition");
             }
