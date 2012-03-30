@@ -276,6 +276,14 @@ public:
       return scDimInt(singIdeal, NULL);
    }
    
+
+   SingularIdeal_wrap* initial_ideal() const {
+      check_ring(singRing); 
+      ::ideal res;
+      res = idHead(singIdeal);
+      return new SingularIdeal_impl(res, singRing);
+   }
+
    // Compute the radical of an ideal using primdec.lib from Singular
    SingularIdeal_wrap* radical() const {
       check_ring(singRing); 

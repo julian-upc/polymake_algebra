@@ -38,6 +38,8 @@ public:
    virtual int dim() = 0;
 
    virtual SingularIdeal_wrap* radical() const = 0;
+   
+   virtual SingularIdeal_wrap* initial_ideal() const = 0;
 
    virtual Array<SingularIdeal_wrap*> primary_decomposition() const = 0;
 
@@ -67,6 +69,10 @@ public:
 
    void groebner() const  {
       singIdeal->groebner();
+   }
+
+   SingularIdeal initial_ideal() const  {
+      return SingularIdeal(singIdeal->initial_ideal());
    }
 
    SingularIdeal radical() const  {
