@@ -37,6 +37,8 @@ public:
    
    virtual int dim() = 0;
 
+   virtual Polynomial<> reduce(const Polynomial<>& p, const Ring<>& r) const = 0;
+
    virtual SingularIdeal_wrap* radical() const = 0;
    
    virtual SingularIdeal_wrap* initial_ideal() const = 0;
@@ -69,6 +71,10 @@ public:
 
    void groebner() const  {
       singIdeal->groebner();
+   }
+
+   Polynomial<> reduce(const Polynomial<>& p, const Ring<>& r) const {
+      return singIdeal->reduce(p, r);
    }
 
    SingularIdeal initial_ideal() const  {

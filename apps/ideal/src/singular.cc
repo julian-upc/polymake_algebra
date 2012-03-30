@@ -190,6 +190,25 @@ number convert_Rational_to_number(const Rational& r)
    return nlInit2gmp(num,denom);
 }
 
+Polynomial<> convert_poly_to_Polynomial(const poly q, const Ring<>& r){
+
+   int n = r.n_vars();
+   poly p = pCopy(q);
+   ListMatrix<Vector<int> > exponents(0,n);
+   std::vector<Rational> coefficients;
+   while(p != NULL){
+      number c = pGetCoeff(p);
+      coefficients.push_back(convert_number_to_Rational(c, currRing));
+      Vector<int> monomial(n);
+      for(int i = 1; i<=n; i++){
+         monomial[i-1] = pGetExp(p, i);
+      }
+      exponents /= monomial;
+      pIter(p);
+   }
+   return Polynomial<>(exponents, coefficients, r);
+}
+
 poly convert_Polynomial_to_poly(const Polynomial<>& mypoly)
 {
    poly p = pISet(0);
@@ -332,6 +351,12 @@ public:
       }
    }
 
+   Polynomial<> reduce(const Polynomial<>& p, const Ring<>& r) const {
+      check_ring(singRing);
+      poly q = kNF(singIdeal, NULL, convert_Polynomial_to_poly(p));
+      return convert_poly_to_Polynomial(q,r);
+   }
+
    // Converting singIdeal generators to an array of Polymake polynomials.
    Array<Polynomial<> > polynomials(const Ring<>& r) const
    {
@@ -340,23 +365,9 @@ public:
       int numgen = IDELEMS(singIdeal);
       std::vector<Polynomial<> > polys;
 
-      int n = rVar(currRing);
       for(int j = 0; j<numgen; j++) {
          if(singIdeal->m[j] != NULL){
-            ListMatrix<Vector<int> > exponents(0,n);
-            poly p = singIdeal->m[j];
-            std::vector<Rational> coefficients;
-            while(p != NULL){
-               number c = pGetCoeff(p);
-               coefficients.push_back(convert_number_to_Rational(c, currRing));
-               Vector<int> monomial(n);
-               for(int i = 1; i<=n; i++){
-                  monomial[i-1] = pGetExp(p, i);
-               }
-               exponents /= monomial;
-               pIter(p);
-            }
-            polys.push_back(Polynomial<>(exponents, coefficients, r));
+            polys.push_back(convert_poly_to_Polynomial(singIdeal->m[j],r));
          }
       }
       return Array<Polynomial<> >(polys);

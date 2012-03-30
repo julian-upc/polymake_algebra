@@ -49,6 +49,8 @@ object Groebner {
 
       method radical() : c++ ;
 
+      method reduce(Polynomial, Ring) : c++;
+
       method polynomials(Ring) : c++;
 
       method primary_decomposition() : c++;
@@ -56,6 +58,12 @@ object Groebner {
    }
 
    property SINGULAR_IDEAL : SingularIdeal;
+
+   user_method reduce(Polynomial) {
+      my ($self, $p) = @_;
+      # TODO: Take care if ring is correct.
+      return $self->SINGULAR_IDEAL->reduce($p, $p->get_ring());
+   }
 
 }
 
