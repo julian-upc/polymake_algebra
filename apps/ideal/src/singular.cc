@@ -120,7 +120,7 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
       ord[1] = ringorder_c;
       block0[0] = 1;
       block1[0] = nvars;
-      int **wvhdl = (int**)omalloc0((ord_size+1)*sizeof(int));
+      int **wvhdl = (int**)omalloc0((ord_size+1)*sizeof(int*));
       wvhdl[0] = (int*)omalloc0(nvars*nvars*sizeof(int));
       for(int i =0; i<nvars; i++){
          for(int j = 0; j<nvars; j++){
@@ -131,7 +131,7 @@ idhdl check_ring(const Ring<> r, const Matrix<int> order){
       // Create Singular ring:
       ring r = rDefault(0,nvars,n,ord_size,ord,block0,block1,wvhdl);
       char* ringid = (char*) malloc(2+sizeof(unsigned int));
-      sprintf(ringid,"R-%0u",ringidcounter++); 
+      sprintf(ringid,"R_%0u",ringidcounter++); 
       // Create handle for ring:
       idhdl newRingHdl=enterid(ringid,0,RING_CMD,&IDROOT,FALSE);
       IDRING(newRingHdl)=r;
@@ -324,21 +324,18 @@ public:
 
    Array<SingularIdeal_wrap*> primary_decomposition() const {
       check_ring(singRing);
-      
       idhdl primdecSY = get_singular_function("primdecSY");
       sleftv arg;
       memset(&arg,0,sizeof(arg));
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)idCopy(singIdeal);
-      // call primdecGTZ
+      // call primdecSY
       leftv res=iiMake_proc(primdecSY,NULL,&arg);
       if(res->Typ() == LIST_CMD){
          lists L = (lists)res->Data();
-         cout << L->nr << endl;
          Array<SingularIdeal_wrap*> result(L->nr+1);
          for(int j=0; j<=L->nr; j++){
             lists LL = (lists)L->m[j].Data();
-            cout << LL->nr << endl;
             if(LL->m[0].Typ() == IDEAL_CMD){
                result[j] = new SingularIdeal_impl((::ideal) (LL->m[0].Data()),singRing);
             } else {
