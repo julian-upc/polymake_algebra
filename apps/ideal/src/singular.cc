@@ -241,7 +241,7 @@ public:
 
    SingularIdeal_impl(::ideal i, idhdl r)
    {
-      singIdeal=i;
+      singIdeal=idCopy(i);
       singRing=r;
    }
 
@@ -293,6 +293,33 @@ public:
          throw std::runtime_error("radical returned an error");
       }
       return new SingularIdeal_impl((::ideal) (res->Data()), singRing);
+   }
+
+   Array<SingularIdeal_wrap*> primary_decomposition() const {
+      check_ring(singRing);
+      
+      idhdl primdecGTZ = get_singular_function("primdecGTZ");
+      sleftv arg;
+      memset(&arg,0,sizeof(arg));
+      arg.rtyp=IDEAL_CMD;
+      arg.data=(void *)idCopy(singIdeal);
+      // call radical
+      leftv res=iiMake_proc(primdecGTZ,NULL,&arg);
+      if(res->Typ() == LIST_CMD){
+         lists L = (lists)res->Data();
+         lists LL = (lists)L->m[0].Data();
+         Array<SingularIdeal_wrap*> result(LL->nr);
+         for(int j=0; j<=LL->nr; j++){
+            if(LL->m[j].Typ() == IDEAL_CMD){
+               result[j] = new SingularIdeal_impl((::ideal) (LL->m[j].Data()),singRing);
+            } else {
+               throw std::runtime_error("Something went wrong for the primary decomposition");
+            }
+         }
+         return result;
+      } else {
+         throw std::runtime_error("Something went wrong for the primary decomposition");
+      }
    }
 
    // Converting singIdeal generators to an array of Polymake polynomials.

@@ -39,6 +39,8 @@ public:
 
    virtual SingularIdeal_wrap* radical() const = 0;
 
+   virtual Array<SingularIdeal_wrap*> primary_decomposition() const = 0;
+
    virtual Array<Polynomial<> > polynomials(const Ring<>& r) const = 0;
    
    static SingularIdeal_wrap* create(const Array<Polynomial<> >& gens, const Matrix<int>& order);
@@ -71,6 +73,15 @@ public:
       return SingularIdeal(singIdeal->radical());
    }
    
+   perl::ListReturn primary_decomposition() const {
+      Array<SingularIdeal_wrap*> pd = singIdeal->primary_decomposition();
+      perl::ListReturn result;
+      for(Entire<Array<SingularIdeal_wrap*> >::const_iterator id = entire(pd);!id.at_end();++id){
+         result << SingularIdeal(*id);
+      }
+      return result;
+   }
+
    Array<Polynomial<> > polynomials(const Ring<>& r) const {
       return singIdeal->polynomials(r);
    }

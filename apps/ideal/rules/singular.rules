@@ -49,6 +49,8 @@ object Groebner {
 
       method polynomials(Ring) : c++;
 
+      method primary_decomposition() : c++;
+
    }
 
    property SINGULAR_IDEAL : SingularIdeal;
@@ -78,6 +80,17 @@ object Ideal {
       $this->DIM = $si->dim();
    }
 
+   rule PRIMARY_DECOMPOSITION : GENERATORS, RING {
+      my $si;
+      unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
+         warn "automatically creating new GROEBNER object with lex ordering";
+         $si = $this->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL; #FIXME ordering
+      }
+      my @pd = $si->primary_decomposition();
+      foreach my $id (@pd) {
+         $this->add("PRIMARY_DECOMPOSITION", GENERATORS=>$id->polynomials($this->RING),RING=>$this->RING);
+      }
+   }
 
    rule RADICAL : RING {
       my $si;
