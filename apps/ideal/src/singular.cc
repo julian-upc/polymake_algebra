@@ -293,7 +293,7 @@ public:
       idhdl radical=get_singular_function("radical");
       
       arg.rtyp=IDEAL_CMD;
-      arg.data=(void *)idCopy(singIdeal);
+      arg.data=(void *)singIdeal;
       // call radical
       leftv res=iiMake_proc(radical,NULL,&arg);
       if (res==NULL) {
@@ -306,13 +306,13 @@ public:
    Array<SingularIdeal_wrap*> primary_decomposition() const {
       check_ring(singRing);
       
-      idhdl primdecGTZ = get_singular_function("primdecGTZ");
+      idhdl primdecSY = get_singular_function("primdecSY");
       sleftv arg;
       memset(&arg,0,sizeof(arg));
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)idCopy(singIdeal);
       // call primdecGTZ
-      leftv res=iiMake_proc(primdecGTZ,NULL,&arg);
+      leftv res=iiMake_proc(primdecSY,NULL,&arg);
       if(res->Typ() == LIST_CMD){
          lists L = (lists)res->Data();
          cout << L->nr << endl;
