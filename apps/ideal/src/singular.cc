@@ -308,7 +308,7 @@ public:
       if(res->Typ() == LIST_CMD){
          lists L = (lists)res->Data();
          lists LL = (lists)L->m[0].Data();
-         Array<SingularIdeal_wrap*> result(LL->nr);
+         Array<SingularIdeal_wrap*> result(LL->nr+1);
          for(int j=0; j<=LL->nr; j++){
             if(LL->m[j].Typ() == IDEAL_CMD){
                result[j] = new SingularIdeal_impl((::ideal) (LL->m[j].Data()),singRing);

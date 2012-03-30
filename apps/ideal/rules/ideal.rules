@@ -39,5 +39,12 @@ object Ideal {
 		$this->PRIMARY = $this->RADICAL->PRIME;
 	}
 
+   object Groebner {
+      
+      rule initial : ORDER {
+         $this->ORDER =~ /^(lex|dp)$/ or croak ("unknown term order")
+      }
+      
+   }
 }
 
