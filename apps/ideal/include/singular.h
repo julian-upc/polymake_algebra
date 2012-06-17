@@ -31,7 +31,7 @@ class SingularIdeal;
 
 class SingularIdeal_wrap {
 public:
-   virtual ~SingularIdeal_wrap() { /* FIXME cout << "SingularIdeal destroyed" << endl; */ }
+   virtual ~SingularIdeal_wrap() { /* cout << "SingularIdeal destroyed" << endl; */ }
 
    virtual void groebner() = 0;
    

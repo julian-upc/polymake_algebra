@@ -266,7 +266,7 @@ public:
 
    ~SingularIdeal_impl() 
    {
-      /* FIXME
+      /* This does not work yet:
       cout << "SingularIdeal_impl cleaning up" <<endl;
       if(singRing!=NULL) {
          if(singIdeal!=NULL)
