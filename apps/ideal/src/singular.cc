@@ -18,6 +18,7 @@
    GNU General Public License for more details.
 */
 
+#include <dlfcn.h>
 
 #include "polymake/client.h"
 #include "polymake/ideal/singular.h"
@@ -51,11 +52,17 @@ void init_singular()
 {
    if(singular_initialized)
       return;
+
+   cout << "*** trying to determine path of libsingular ***" << endl;
+
+   Dl_info dli;
+   if (!dladdr((void*)&siInit,&dli)) {
+      throw std::runtime_error("*** could not find symbol from libsingular ***");
+   }
+   cout << "*** found libsingular at: " << dli.dli_fname << endl;
    
    cout << "*** loading singular ***" << endl;
-   std::string p = perl::get_custom("$singular_path");
-   p+=+"/lib/libsingular.so";
-   char* cpath = omStrDup(p.c_str());
+   char* cpath = omStrDup(dli.dli_fname);
    siInit(cpath);
    WerrorS_callback = &singular_error_handler;
    
