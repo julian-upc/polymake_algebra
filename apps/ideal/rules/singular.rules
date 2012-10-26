@@ -73,6 +73,21 @@ object Ideal {
       $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->ORDER_MATRIX);
    }
 
+   rule MONOMIAL : RING , GENERATORS {
+      my $si;
+      unless (defined($si = $this->lookup("GROEBNER"))) {
+         warn "automatically creating new GROEBNER object with lex ordering";
+         $si = $this->GROEBNER(ORDER=>"lex",temporary);
+      }
+      my $result = 1;
+      # One can easily show that it suffices to check whether the generators
+      # of the initial ideal are contained in the ideal.
+      foreach my $mon (@{$si->INITIAL_IDEAL->GENERATORS}){
+         $result &= ($si->reduce($mon)->trivial);
+      }
+      $this->MONOMIAL = $result;
+   }
+   
    rule DIM : RING , GENERATORS {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
