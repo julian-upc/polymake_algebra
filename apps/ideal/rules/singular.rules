@@ -44,7 +44,7 @@ object Groebner {
 
    }
 
-   property SINGULAR_IDEAL : SingularIdeal;
+   property SINGULAR_IDEAL : SingularIdeal : non_storable;
 
    user_method reduce(Polynomial) {
       my ($self, $p) = @_;
