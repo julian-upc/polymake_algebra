@@ -27,7 +27,8 @@ sub usage {
 
 sub proceed {
    my ($options)=@_;
-   if (defined (my $singular_path=$$options{singular})) {
+   my $singular_path;
+   if (defined ($singular_path=$$options{singular})) {
       my $singular_inc="$singular_path/include";
       my $singular_lib=Polymake::Configure::get_libdir($singular_path, "singular");
       if (-f "$singular_inc/libsingular.h" && -f "$singular_lib/libsingular.$Config::Config{dlext}") {
@@ -70,4 +71,5 @@ int main() {
    }
 
    $Libs="-lsingular";
+   return $singular_path ? "libsingular=$singular_path" : "";
 }
