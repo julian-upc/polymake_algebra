@@ -112,7 +112,7 @@ object Ideal {
       @res;
    }
 
-   rule RADICAL : RING {
+   rule RADICAL : RING, GENERATORS {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
          warn "automatically creating new GROEBNER object with lex ordering";
