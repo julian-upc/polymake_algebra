@@ -55,16 +55,18 @@ object Groebner {
 }
 
 object Ideal {
-
+   
    rule GROEBNER.INITIAL_IDEAL : GROEBNER.SINGULAR_IDEAL, RING {
       my $i = $this->GROEBNER->SINGULAR_IDEAL->initial_ideal();
       $this->GROEBNER->INITIAL_IDEAL = new Ideal(GENERATORS=>$i->polynomials($this->RING), RING=>$this->RING);
    }
 
-   rule GROEBNER.BASIS, GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.ORDER_MATRIX , RING {
+   rule GROEBNER.INITIAL_IDEAL, GROEBNER.BASIS, GROEBNER.SINGULAR_IDEAL : GENERATORS, GROEBNER.ORDER_MATRIX , RING {
       $this->GROEBNER->SINGULAR_IDEAL = new SingularIdeal($this->GENERATORS, $this->GROEBNER->ORDER_MATRIX);
       $this->GROEBNER->SINGULAR_IDEAL->groebner();
       $this->GROEBNER->BASIS = $this->GROEBNER->SINGULAR_IDEAL->polynomials($this->RING);
+      my $i = $this->GROEBNER->SINGULAR_IDEAL->initial_ideal();
+      $this->GROEBNER->INITIAL_IDEAL = new Ideal(GENERATORS=>$i->polynomials($this->RING), RING=>$this->RING);
    }
    precondition : !ZERO;
 
@@ -83,7 +85,7 @@ object Ideal {
       # One can easily show that it suffices to check whether the generators
       # of the initial ideal are contained in the ideal.
       foreach my $mon (@{$si->INITIAL_IDEAL->GENERATORS}){
-         $result &= ($si->reduce($mon)->trivial);
+         $result &&= ($si->reduce($mon)->trivial);
       }
       $this->MONOMIAL = $result;
    }
