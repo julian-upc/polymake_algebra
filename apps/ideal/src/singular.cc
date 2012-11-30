@@ -41,11 +41,35 @@ unsigned int ringidcounter = 0;
 Map<std::pair<Ring<>::id_type, Matrix<int> >, idhdl> singular_ring_map;
 // Storing the handles for the Singular functions globally.
 Map<std::string, idhdl> singular_function_map;
+// Store loaded libraries.
+Map<std::string, bool> loaded_libraries;
+
 
 void singular_error_handler(const char* error)
 {
    throw std::runtime_error(error);
 }
+
+void load_library(std::string lib){
+   if (loaded_libraries.exists(lib)) 
+      return;
+   sleftv arg,r1,r2;
+   
+   // load the singular library lib:
+   memset(&arg,0,sizeof(arg));
+   memset(&r1,0,sizeof(r1));
+   memset(&r2,0,sizeof(r2));
+   arg.rtyp=STRING_CMD;
+   arg.data=omStrDup(lib.c_str());
+   r2.rtyp=LIB_CMD;
+   int err=iiExprArith2(&r1,&r2,'(',&arg);
+   if (err) {
+      printf("interpreter returns %d\n",err);
+      throw std::runtime_error("*** singular: loading "+lib+" failed ***");
+   }
+   loaded_libraries[lib]=1;
+}
+
 
 // Initialize Singular:
 void init_singular() 
@@ -66,25 +90,27 @@ void init_singular()
    siInit(cpath);
    WerrorS_callback = &singular_error_handler;
    
-   sleftv arg,r1,r2;
-   
-   // load the singular library primdec.lib:
-   // Is it really necessary to do this here?
-   // Should we not only load libraries on demand?
-   memset(&arg,0,sizeof(arg));
-   memset(&r1,0,sizeof(r1));
-   memset(&r2,0,sizeof(r2));
-   arg.rtyp=STRING_CMD;
-   arg.data=omStrDup("primdec.lib");
-   r2.rtyp=LIB_CMD;
-   int err=iiExprArith2(&r1,&r2,'(',&arg);
-   if (err) {
-      printf("interpreter returns %d\n",err);
-      throw std::runtime_error("*** singular loading failed ***");
-   }
+   // sleftv arg,r1,r2;
+  
+   load_library("primdec.lib");
+   // // load the singular library primdec.lib:
+   // // Is it really necessary to do this here?
+   // // Should we not only load libraries on demand?
+   // memset(&arg,0,sizeof(arg));
+   // memset(&r1,0,sizeof(r1));
+   // memset(&r2,0,sizeof(r2));
+   // arg.rtyp=STRING_CMD;
+   // arg.data=omStrDup("primdec.lib");
+   // r2.rtyp=LIB_CMD;
+   // int err=iiExprArith2(&r1,&r2,'(',&arg);
+   // if (err) {
+   //    printf("interpreter returns %d\n",err);
+   //    throw std::runtime_error("*** singular loading failed ***");
+   // }
    cout << "*** singular done ***" << endl;
    singular_initialized = 1;
 }
+
 
 // This function returns the idhdl of the function to be used.
 // If the handle does not exist the function is looked up and the handle
@@ -315,31 +341,32 @@ public:
       check_ring(singRing); 
       sleftv arg;
       memset(&arg,0,sizeof(arg));
-
+      load_library("primdec.lib");
       idhdl radical=get_singular_function("radical");
       
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)singIdeal;
       // call radical
-      leftv res=iiMake_proc(radical,NULL,&arg);
-      if (res==NULL) {
+      BOOLEAN res=iiMake_proc(radical,NULL,&arg);
+      if (res) {
          errorreported = 0;
          throw std::runtime_error("radical returned an error");
       }
-      return new SingularIdeal_impl((::ideal) (res->Data()), singRing);
+      return new SingularIdeal_impl((::ideal) (iiRETURNEXPR.Data()), singRing);
    }
 
    Array<SingularIdeal_wrap*> primary_decomposition() const {
       check_ring(singRing);
+      load_library("primdec.lib");
       idhdl primdecSY = get_singular_function("primdecSY");
       sleftv arg;
       memset(&arg,0,sizeof(arg));
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)idCopy(singIdeal);
       // call primdecSY
-      leftv res=iiMake_proc(primdecSY,NULL,&arg);
-      if(res->Typ() == LIST_CMD){
-         lists L = (lists)res->Data();
+      BOOLEAN res=iiMake_proc(primdecSY,NULL,&arg);
+      if(!res && (iiRETURNEXPR.Typ() == LIST_CMD)){
+         lists L = (lists)iiRETURNEXPR.Data();
          Array<SingularIdeal_wrap*> result(L->nr+1);
          for(int j=0; j<=L->nr; j++){
             lists LL = (lists)L->m[j].Data();
