@@ -17,8 +17,6 @@
 
 #include "polymake/client.h"
 #include "polymake/ideal/singular.h"
-#include "polymake/Ring.h"
-#include "polymake/Rational.h"
 namespace polymake { namespace ideal {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0>

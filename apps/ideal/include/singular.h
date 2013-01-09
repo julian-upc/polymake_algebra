@@ -31,8 +31,10 @@ class SingularIdeal;
 
 class SingularIdeal_wrap {
 public:
-   virtual ~SingularIdeal_wrap() { /* cout << "SingularIdeal destroyed" << endl; */ }
+   virtual ~SingularIdeal_wrap() { }
 
+   virtual SingularIdeal_wrap* copy() const = 0;
+   
    virtual void groebner() = 0;
    
    virtual int dim() = 0;
@@ -61,8 +63,16 @@ public:
       singIdeal = SingularIdeal_wrap::create(gens, order);
    }
 
-   SingularIdeal(SingularIdeal_wrap* sI) {
-      singIdeal = sI;
+   SingularIdeal(SingularIdeal_wrap* sIw) {
+      singIdeal = sIw;
+   }
+
+   SingularIdeal(const SingularIdeal& sI) {
+      singIdeal = sI.singIdeal->copy();
+   }
+
+   ~SingularIdeal() {
+      delete singIdeal;
    }
 
    int dim() const  {

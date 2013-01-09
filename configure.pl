@@ -39,7 +39,7 @@ sub proceed {
       }
 
    } else {
-      local $Polymake::Configure::Libs="-lsingular -ldl -lpthread $Polymake::Configure::Libs";
+      local $Polymake::Configure::Libs="-lsingular -lpthread $Polymake::Configure::Libs";
       my $error=Polymake::Configure::build_test_program(<<"---");
 #include "libsingular.h"
 #include <string>
