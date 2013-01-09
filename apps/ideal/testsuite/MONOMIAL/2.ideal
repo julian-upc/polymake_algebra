@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?pm chk="509111ae"?>
+<?pm chk="50ed5771"?>
 
-<object name="2" type="ideal::Ideal" version="2.12.1" xmlns="http://www.math.tu-berlin.de/polymake/#3">
+<object name="2" type="ideal::Ideal" version="2.12.3" xmlns="http://www.math.tu-berlin.de/polymake/#3">
   <credit product="Singular"><![CDATA[  Singular is a computer algebra system for polynomial computations, with special emphasis on commutative and non-commutative algebra, algebraic geometry, and singularity theory. It is free and open-source under the GNU General Public Licence.
   http://www.singular.uni-kl.de/
 ]]></credit>
