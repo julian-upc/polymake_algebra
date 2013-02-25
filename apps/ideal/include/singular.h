@@ -42,9 +42,11 @@ public:
    virtual Polynomial<> reduce(const Polynomial<>& p, const Ring<>& r) const = 0;
 
    virtual SingularIdeal_wrap* radical() const = 0;
-   
+
    virtual SingularIdeal_wrap* initial_ideal() const = 0;
 
+   virtual Matrix< std::pair<double,double> > solve() const = 0;
+   
    virtual Array<SingularIdeal_wrap*> primary_decomposition() const = 0;
 
    virtual Array<Polynomial<> > polynomials(const Ring<>& r) const = 0;
@@ -91,6 +93,10 @@ public:
       return SingularIdeal(singIdeal->initial_ideal());
    }
 
+   Matrix< std::pair<double,double> > solve() const {
+     return singIdeal->solve();
+   }
+   
    SingularIdeal radical() const  {
       return SingularIdeal(singIdeal->radical());
    }

@@ -29,6 +29,7 @@
 
 #include <libsingular.h>
 #include "singular/stairc.h"
+#include "singular/mpr_complex.h"
 
 namespace polymake { namespace ideal {
 
@@ -56,24 +57,27 @@ void init_singular()
 {
    if(singular_initialized)
       return;
-   if (POLYMAKE_DEBUG) 
-      cerr << "*** trying to determine path of libsingular ***" << endl;
-
+#if POLYMAKE_DEBUG
+   cerr << "*** trying to determine path of libsingular ***" << endl;
+#endif
    Dl_info dli;
    if (!dladdr((void*)&siInit,&dli)) {
       throw std::runtime_error("*** could not find symbol from libsingular ***");
    }
-   if (POLYMAKE_DEBUG) 
-      cerr << "*** found libsingular at: " << dli.dli_fname << endl;
+#if POLYMAKE_DEBUG
+   cerr << "*** found libsingular at: " << dli.dli_fname << endl;
+#endif
    
-   if (POLYMAKE_DEBUG) 
-      cerr << "*** loading singular ***" << endl;
    char* cpath = omStrDup(dli.dli_fname);
    siInit(cpath);
    WerrorS_callback = &singular_error_handler;
    
-   if (POLYMAKE_DEBUG) 
-      cerr << "*** singular done ***" << endl;
+#if POLYMAKE_DEBUG
+   cerr << "*** singular siInit done. ***" << endl;
+#else
+   // make singular library loading quiet
+   verbose &= ~Sy_bit(V_LOAD_LIB);
+#endif
    singular_initialized = 1;
 }
 
@@ -394,6 +398,68 @@ public:
       } else {
          iiRETURNEXPR.Init();
          throw std::runtime_error("Something went wrong for the primary decomposition");
+      }
+   }
+
+   //Array< Array< std::pair<double,double> > > solve() const {
+   Matrix< std::pair<double,double> > solve() const {
+      check_ring(singRing);
+      load_library("solve.lib");
+      idhdl solve = get_singular_function("solve");
+      sleftv arg;
+      memset(&arg,0,sizeof(arg));
+      arg.rtyp=IDEAL_CMD;
+      arg.data=(void *)idCopy(singIdeal);
+      // tell singular to skip printing the solutions
+      arg.next=(leftv)omAlloc0(sizeof(sleftv));
+      arg.next->rtyp=STRING_CMD;
+      arg.next->data=omStrDup("nodisplay");
+      // do not print the setring / SOL comment
+      int plevel = printlevel;
+      printlevel=-1;
+      // call solve
+      BOOLEAN res=iiMake_proc(solve,NULL,&arg);
+      printlevel=plevel;
+      if(!res && (iiRETURNEXPR.Typ() == RING_CMD)){
+         // retrieve returned ring
+         ring solring = (ring)iiRETURNEXPR.Data();
+         // avoid redefinition message
+         BITSET oldverb = verbose;
+         verbose &= ~Sy_bit(V_REDEFINE);
+         // switch to the new returned ring
+         idhdl solRingHdl=enterid("solveRing", 0, RING_CMD, &IDROOT, FALSE);
+         IDRING(solRingHdl)=solring;
+         verbose = oldverb;
+         rSetHdl(solRingHdl);
+         // retrieve solution list SOL from the interpreter
+         idhdl sol = ggetid("SOL");
+         if (sol->typ != LIST_CMD)
+            throw std::runtime_error("solve: could not find solution array SOL");
+         lists L = (lists) IDDATA(sol);
+         Matrix< std::pair<double,double> > result(L->nr+1, L->m[0].Typ() == LIST_CMD ? ((lists)L->m[0].Data())->nr+1 : 1);
+   	   for(int j=0; j<=L->nr; j++){
+            if (L->m[j].Typ() == LIST_CMD) {
+               lists LL = (lists)L->m[j].Data();
+               for(int k=0; k<=LL->nr; k++) {
+                  // here we fetch the solutions as complex numbers (gmp_complex) and convert to 
+                  // a pair of doubles:
+                  // cnum->real() and cnum->imag() are gmp_float which can converted to double
+                  // alternatively we could access the internal mpf_t float types ( mpfp() )
+                  // which could be converted to mpfr_t (aka AccurateFloat)
+                  // see "include/singular/mpr_complex.h"
+                  gmp_complex* cnum = (gmp_complex*) LL->m[k].Data();
+                  result(j,k) = std::make_pair(cnum->real(),cnum->imag());
+               }
+            } else if (L->m[j].Typ() == NUMBER_CMD) {
+               // in the univariate case the list is only 1-dim
+               // return value is Matrix with 1 column
+               gmp_complex* cnum = (gmp_complex*) L->m[j].Data();
+               result(j,0) = std::make_pair(cnum->real(),cnum->imag());
+            }
+         }
+         return result;
+      } else {
+         throw std::runtime_error("solve: no ring returned");
       }
    }
 

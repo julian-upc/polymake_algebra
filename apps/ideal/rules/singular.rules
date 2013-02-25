@@ -35,6 +35,8 @@ object Groebner {
       method initial_ideal() : c++;
 
       method radical() : c++ ;
+      
+      method solve() : c++;
 
       method reduce(Polynomial, Ring) : c++;
 
@@ -78,8 +80,7 @@ object Ideal {
    rule MONOMIAL : RING , GENERATORS {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER"))) {
-         warn "automatically creating new GROEBNER object with lex ordering";
-         $si = $this->GROEBNER(ORDER=>"lex",temporary);
+         $si = $this->GROEBNER(ORDER=>"dp",temporary);
       }
       my $result = 1;
       # One can easily show that it suffices to check whether the generators
@@ -93,18 +94,25 @@ object Ideal {
    rule DIM : RING , GENERATORS {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
-         warn "automatically creating new GROEBNER object with lex ordering";
-         $si = $this->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL;
+         $si = $this->GROEBNER(ORDER=>"dp",temporary)->SINGULAR_IDEAL;
       }
       $this->DIM = $si->dim();
+   }
+
+   user_method SOLVE : GENERATORS, RING {
+     my $this = shift;
+     my $si;
+     unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
+         $si = $this->GROEBNER(ORDER=>"dp",temporary)->SINGULAR_IDEAL;
+     }
+     $si->solve();     
    }
 
    user_method PRIMARY_DECOMPOSITION : GENERATORS, RING {
       my $self = shift;
       my $si;
       unless (defined($si = $self->lookup("GROEBNER.SINGULAR_IDEAL"))) {
-         warn "automatically creating new GROEBNER object with lex ordering";
-         $si = $self->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL;
+         $si = $self->GROEBNER(ORDER=>"dp",temporary)->SINGULAR_IDEAL;
       }
       my @pd = $si->primary_decomposition();
       my @res;
@@ -117,8 +125,7 @@ object Ideal {
    rule RADICAL : RING, GENERATORS {
       my $si;
       unless (defined($si = $this->lookup("GROEBNER.SINGULAR_IDEAL"))) {
-         warn "automatically creating new GROEBNER object with lex ordering";
-         $si = $this->GROEBNER(ORDER=>"lex",temporary)->SINGULAR_IDEAL;
+         $si = $this->GROEBNER(ORDER=>"dp",temporary)->SINGULAR_IDEAL;
       }
       my $radical = $si->radical();
       $this->RADICAL = new Ideal(GENERATORS=>$radical->polynomials($this->RING),RING=>$this->RING);
