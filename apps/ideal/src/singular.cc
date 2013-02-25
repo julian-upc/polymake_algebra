@@ -102,20 +102,19 @@ void load_library(std::string lib){
    loaded_libraries[lib]=1;
 }
 
-/* void singular_eval(std::string cmd){
-  sleftv r1; memset(&r1,0,sizeof(r1));
-  sleftv arg; memset(&arg,0,sizeof(arg));
-  arg.rtyp=STRING_CMD;
-  arg.data=omStrDup(cmd.c_str());
-  int err=iiExprArith1(&r1,&arg,TYPEOF_CMD);
-  printf("interpreter returns %d\n",err);
-  if (err) errorreported = 0; // reset error handling
-  else
-  // here we know that r1 is of type STRING_CMD, we can cast it to char *:
-  printf("typeof returned type %d, >>%s<<\n",r1.Typ(),(char*)r1.Data());
-  // clean up r1:
-  r1.CleanUp();
-} */
+void singular_eval(const std::string cmd){
+   init_singular();
+   int nest = myynest;
+   currentVoice=feInitStdin(NULL);
+   myynest = 1;
+   // the return is needed to stop the interpreter
+   int err=iiAllStart(NULL,omStrDup((cmd+";return();").c_str()),BT_proc,0);
+   myynest = nest;
+   if (err) {
+      errorreported = 0; // reset error handling
+      throw std::runtime_error("singular interpreter returns "+err);
+   }
+}
 
 // This function returns the idhdl of the function to be used.
 // If the handle does not exist the function is looked up and the handle
@@ -546,11 +545,11 @@ UserFunction4perl("# @category Algebra"
                   "# @param String s",
                   &load_library, "load_singular_library($)");
 
-/* UserFunction4perl("# @category Algebra"
+UserFunction4perl("# @category Algebra"
                   "# Executes given string with Singular"
                   "# @param String s",
                   &singular_eval, "singular_eval($)");
-*/
+
 
 } }
 

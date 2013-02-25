@@ -21,5 +21,11 @@ namespace polymake { namespace ideal {
    }
    FunctionWrapperInstance4perl( void (std::string const&) );
 
+   FunctionWrapper4perl( void (std::string) ) {
+      perl::Value arg0(stack[0]);
+      IndirectWrapperReturnVoid( arg0 );
+   }
+   FunctionWrapperInstance4perl( void (std::string) );
+
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
 } }
