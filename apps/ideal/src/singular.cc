@@ -48,6 +48,7 @@ Map<std::string, bool> loaded_libraries;
 
 void singular_error_handler(const char* error)
 {
+   errorreported = 0;
    throw std::runtime_error(error);
 }
 
