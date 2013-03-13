@@ -48,6 +48,7 @@ Map<std::string, bool> loaded_libraries;
 
 void singular_error_handler(const char* error)
 {
+   errorreported = 0;
    throw std::runtime_error(error);
 }
 
@@ -77,6 +78,7 @@ void init_singular()
 #else
    // make singular library loading quiet
    verbose &= ~Sy_bit(V_LOAD_LIB);
+   verbose &= ~Sy_bit(V_REDEFINE);
 #endif
    singular_initialized = 1;
 }
@@ -114,6 +116,19 @@ void singular_eval(const std::string cmd){
       errorreported = 0; // reset error handling
       throw std::runtime_error("singular interpreter returns "+err);
    }
+}
+
+long singular_get_int(const std::string varname){
+   init_singular();
+   int nest = myynest;
+   myynest = 1;
+   idhdl var = ggetid(omStrDup(varname.c_str()));
+   myynest = nest;
+   if (var == NULL)
+      throw std::runtime_error("singular_get_int: could not find variable '"+varname+"'");
+   if (var->typ != INT_CMD)
+      throw std::runtime_error("singular_get_int: variable '"+varname+"' not an int");
+   return (long) IDDATA(var);
 }
 
 // This function returns the idhdl of the function to be used.
@@ -533,23 +548,31 @@ perl::Object quotient(perl::Object I, perl::Object J)
 }
 
 
-UserFunction4perl("# @category Algebra"
+UserFunction4perl("CREDIT Singular\n\n"
+                  "# @category Algebra"
                   "# Computes an ideal quotient via SINGULAR"
                   "# @param Ideal I"
                   "# @param Ideal J"
                   "# @return Ideal",
                   &quotient, "quotient(Ideal, Ideal)");
 
-UserFunction4perl("# @category Algebra"
+UserFunction4perl("CREDIT Singular\n\n"
+                  "# @category Algebra"
                   "# Loads a SINGULAR library"
                   "# @param String s",
                   &load_library, "load_singular_library($)");
 
-UserFunction4perl("# @category Algebra"
+UserFunction4perl("CREDIT Singular\n\n"
+                  "# @category Algebra"
                   "# Executes given string with Singular"
                   "# @param String s",
                   &singular_eval, "singular_eval($)");
 
+UserFunction4perl("CREDIT Singular\n\n"
+                  "# @category Algebra"
+                  "# Retrieves an int variable from 'Singular'"
+                  "# @param String s",
+                  &singular_get_int, "singular_get_int($)");
 
 } }
 
