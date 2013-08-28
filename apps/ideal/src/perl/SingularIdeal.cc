@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-2010
    Ewgenij Gawrilow, Michael Joswig (Technische Universitaet Darmstadt, Germany)
-   http://www.polymake.de
+   http://www.polymake.org
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -23,7 +23,7 @@
 #include "polymake/Matrix.h"
 #include "polymake/IncidenceMatrix.h"
 #include "polymake/SparseMatrix.h"
-namespace polymake { namespace ideal {
+namespace polymake { namespace ideal { namespace {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1, typename T2>
    FunctionInterface4perl( new_X_X, T0,T1,T2 ) {
@@ -35,4 +35,4 @@ namespace polymake { namespace ideal {
    FunctionInstance4perl(new_X_X, SingularIdeal, perl::Canned< const Array< Polynomial< Rational, int > > >, perl::Canned< const Matrix< int > >);
    FunctionInstance4perl(new_X_X, SingularIdeal, perl::Canned< const Array< Polynomial< Rational, int > > >, perl::Canned< const SparseMatrix< int, NonSymmetric > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
-} }
+} } }

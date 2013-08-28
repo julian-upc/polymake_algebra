@@ -27,15 +27,19 @@ sub usage {
 
 sub proceed {
    my ($options)=@_;
+   my $lib_ext=$Config::Config{dlext};
+   if ($^O eq "darwin") {
+     $lib_ext="dylib";  # on Mac dlext points to bundle, but we need a shared lib, not a module
+   }
    my $singular_path;
    if (defined ($singular_path=$$options{singular})) {
       my $singular_inc="$singular_path/include";
       my $singular_lib=Polymake::Configure::get_libdir($singular_path, "singular");
-      if (-f "$singular_inc/libsingular.h" && -f "$singular_lib/libsingular.$Config::Config{dlext}") {
+      if (-f "$singular_inc/libsingular.h" && -f "$singular_lib/libsingular.$lib_ext") {
 	 $CXXflags="-I$singular_inc";
 	 $LDflags="-L$singular_lib -Wl,-rpath,$singular_lib";
       } else {
-	 die "Invalid installation location of libsingular: header file libsingular.h and/or library libsingular.$Config::Config{dlext} not found\n";
+	 die "Invalid installation location of libsingular: header file libsingular.h and/or library libsingular.$lib_ext not found\n";
       }
 
    } else {

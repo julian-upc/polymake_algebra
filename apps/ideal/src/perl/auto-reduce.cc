@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-2010
    Ewgenij Gawrilow, Michael Joswig (Technische Universitaet Darmstadt, Germany)
-   http://www.polymake.de
+   http://www.polymake.org
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -20,7 +20,7 @@
 #include "polymake/Polynomial.h"
 #include "polymake/Rational.h"
 #include "polymake/Ring.h"
-namespace polymake { namespace ideal {
+namespace polymake { namespace ideal { namespace {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    template <typename T0, typename T1, typename T2>
    FunctionInterface4perl( reduce_X_X_f1, T0,T1,T2 ) {
@@ -30,4 +30,4 @@ namespace polymake { namespace ideal {
 
    FunctionInstance4perl(reduce_X_X_f1, perl::Canned< const SingularIdeal >, perl::Canned< const Polynomial< Rational, int > >, perl::Canned< const Ring< Rational, int > >);
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
-} }
+} } }
