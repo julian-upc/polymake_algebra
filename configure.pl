@@ -1,4 +1,4 @@
-#  Copyright (c) 1997-2012
+#  Copyright (c) 1997-2013
 #  Ewgenij Gawrilow, Michael Joswig (Technische Universitaet Darmstadt, Germany)
 #  http://www.polymake.org
 #
@@ -12,7 +12,7 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #-------------------------------------------------------------------------------
-# $Project: polymake $$Id$
+# $Project: polymake $$Id: configure.pl 11271 2013-06-06 21:43:16Z gawrilow $
 
 @make_vars=qw( CXXflags LDflags Libs );
 
@@ -32,7 +32,7 @@ sub proceed {
      $lib_ext="dylib";  # on Mac dlext points to bundle, but we need a shared lib, not a module
    }
    my $singular_path;
-   if (defined ($singular_path=$$options{singular})) {
+   if (defined ($singular_path=$options->{singular})) {
       my $singular_inc="$singular_path/include";
       my $singular_lib=Polymake::Configure::get_libdir($singular_path, "singular");
       if (-f "$singular_inc/libsingular.h" && -f "$singular_lib/libsingular.$lib_ext") {
@@ -43,8 +43,7 @@ sub proceed {
       }
 
    } else {
-      local $Polymake::Configure::Libs="-lsingular -lpthread $Polymake::Configure::Libs";
-      my $error=Polymake::Configure::build_test_program(<<"---");
+      my $error=Polymake::Configure::build_test_program(<<"---", Libs => "-lsingular -lpthread");
 #include "libsingular.h"
 #include <string>
 #include <dlfcn.h>
@@ -61,14 +60,14 @@ int main() {
 	 $error=Polymake::Configure::run_test_program();
 	 if ($?) {
 	    die "Could not run a test program checking for libsingular.\n",
-	        "The complete error log follows:\n$error\n\n",
+	        "The complete error log follows:\n\n$error\n",
 		"Please investigate the reasons and fix the installation.\n";
 	 }
       } else {
 	 die "Could not compile a test program checking for libsingular.\n",
              "The most probable reasons are that the library is installed at a non-standard location,\n",
 	     "is not configured to build a shared module, or missing at all.\n",
-	     "The complete error log follows:\n$error\n\n",
+	     "The complete error log follows:\n\n$error\n",
 	     "Please install the library and specify its location using --with-singular option, if needed.\n",
 	     "Please remember to enable shared modules when configuring the libsingular!\n";
       }

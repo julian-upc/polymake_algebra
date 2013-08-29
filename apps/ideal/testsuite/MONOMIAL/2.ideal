@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?pm chk="5187e80d"?>
+<?pm chk="521f640b"?>
 
-<object name="2" type="ideal::Ideal" version="2.12.3" xmlns="http://www.math.tu-berlin.de/polymake/#3">
+<object name="2" type="ideal::Ideal" version="2.12.5" xmlns="http://www.math.tu-berlin.de/polymake/#3">
   <credit product="Singular"><![CDATA[  Singular is a computer algebra system for polynomial computations, with special emphasis on commutative and non-commutative algebra, algebraic geometry, and singularity theory. It is free and open-source under the GNU General Public Licence.
   http://www.singular.uni-kl.de/
 ]]></credit>
@@ -22,20 +22,24 @@
             <e>1</e>
           </t>
         </m>
-        <v>x y z w</v>
+        <t>
+          <v>x y z w</v>
+        </t>
       </t>
       <t>
         <m>
           <t>
-            <v dim="4"> <e i="1">3</e> <e i="3">1</e> </v>
-            <e>1</e>
-          </t>
-          <t>
             <v dim="4"> <e i="0">1</e> <e i="1">1</e> <e i="2">1</e> <e i="3">1</e> </v>
             <e>-1</e>
           </t>
+          <t>
+            <v dim="4"> <e i="1">3</e> <e i="3">1</e> </v>
+            <e>1</e>
+          </t>
         </m>
-        <v>x y z w</v>
+        <t>
+          <v>x y z w</v>
+        </t>
       </t>
       <t>
         <m>
@@ -48,13 +52,17 @@
             <e>-1</e>
           </t>
         </m>
-        <v>x y z w</v>
+        <t>
+          <v>x y z w</v>
+        </t>
       </t>
     </v>
   </property>
   <property name="ZERO" value="false" />
   <property name="RING">
-    <v>x y z w</v>
+    <t>
+      <v>x y z w</v>
+    </t>
   </property>
   <property name="DIM" value="1" />
   <property name="RADICAL">
@@ -64,15 +72,17 @@
           <t>
             <m>
               <t>
-                <v dim="4"> <e i="0">1</e> <e i="2">1</e> </v>
-                <e>-1</e>
-              </t>
-              <t>
                 <v dim="4"> <e i="1">2</e> </v>
                 <e>1</e>
               </t>
+              <t>
+                <v dim="4"> <e i="0">1</e> <e i="2">1</e> </v>
+                <e>-1</e>
+              </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -85,7 +95,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -98,7 +110,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -111,7 +125,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -128,7 +144,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -145,7 +163,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -162,7 +182,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -179,12 +201,16 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
         </v>
       </property>
       <property name="RING">
-        <v>x y z w</v>
+        <t>
+          <v>x y z w</v>
+        </t>
       </property>
     </object>
   </property>
@@ -212,7 +238,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -229,20 +257,24 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
               <t>
-                <v dim="4"> <e i="0">1</e> <e i="1">1</e> <e i="2">1</e> <e i="3">1</e> </v>
-                <e>1</e>
-              </t>
-              <t>
                 <v dim="4"> <e i="1">3</e> <e i="3">1</e> </v>
                 <e>-1</e>
               </t>
+              <t>
+                <v dim="4"> <e i="0">1</e> <e i="1">1</e> <e i="2">1</e> <e i="3">1</e> </v>
+                <e>1</e>
+              </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -259,7 +291,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -276,7 +310,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -289,7 +325,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -306,7 +344,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
           <t>
             <m>
@@ -323,7 +363,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </t>
         </v>
       </property>
@@ -338,7 +380,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -347,7 +391,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -356,7 +402,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -365,7 +413,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -374,7 +424,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -383,7 +435,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -392,7 +446,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -401,12 +457,16 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z w</v>
+                <t>
+                  <v>x y z w</v>
+                </t>
               </t>
             </v>
           </property>
           <property name="RING">
-            <v>x y z w</v>
+            <t>
+              <v>x y z w</v>
+            </t>
           </property>
         </object>
       </property>

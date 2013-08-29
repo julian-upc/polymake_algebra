@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?pm chk="5187d7bc"?>
+<?pm chk="521f4192"?>
 
-<object name="1" type="ideal::Ideal" version="2.12.3" xmlns="http://www.math.tu-berlin.de/polymake/#3">
+<object name="1" type="ideal::Ideal" version="2.12.5" xmlns="http://www.math.tu-berlin.de/polymake/#3">
   <credit product="Singular"><![CDATA[  Singular is a computer algebra system for polynomial computations, with special emphasis on commutative and non-commutative algebra, algebraic geometry, and singularity theory. It is free and open-source under the GNU General Public Licence.
   http://www.singular.uni-kl.de/
 ]]></credit>
@@ -18,7 +18,9 @@
             <e>1</e>
           </t>
         </m>
-        <v>x y z</v>
+        <t>
+          <v>x y z</v>
+        </t>
       </t>
       <t>
         <m>
@@ -31,7 +33,9 @@
             <e>-1</e>
           </t>
         </m>
-        <v>x y z</v>
+        <t>
+          <v>x y z</v>
+        </t>
       </t>
     </v>
   </property>
@@ -58,7 +62,9 @@
                 <e>1</e>
               </t>
             </m>
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </t>
           <t>
             <m>
@@ -71,7 +77,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </t>
           <t>
             <m>
@@ -84,7 +92,9 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </t>
           <t>
             <m>
@@ -97,20 +107,24 @@
                 <e>-1</e>
               </t>
             </m>
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </t>
           <t>
             <m>
               <t>
-                <v dim="3"> <e i="0">1</e> <e i="1">14</e> <e i="2">1</e> </v>
-                <e>-1</e>
-              </t>
-              <t>
                 <v dim="3"> <e i="1">4</e> <e i="2">30</e> </v>
                 <e>1</e>
               </t>
+              <t>
+                <v dim="3"> <e i="0">1</e> <e i="1">14</e> <e i="2">1</e> </v>
+                <e>-1</e>
+              </t>
             </m>
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </t>
         </v>
       </property>
@@ -125,7 +139,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z</v>
+                <t>
+                  <v>x y z</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -134,7 +150,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z</v>
+                <t>
+                  <v>x y z</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -143,7 +161,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z</v>
+                <t>
+                  <v>x y z</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -152,7 +172,9 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z</v>
+                <t>
+                  <v>x y z</v>
+                </t>
               </t>
               <t>
                 <m>
@@ -161,12 +183,16 @@
                     <e>1</e>
                   </t>
                 </m>
-                <v>x y z</v>
+                <t>
+                  <v>x y z</v>
+                </t>
               </t>
             </v>
           </property>
           <property name="RING">
-            <v>x y z</v>
+            <t>
+              <v>x y z</v>
+            </t>
           </property>
         </object>
       </property>
@@ -174,7 +200,9 @@
   </property>
   <property name="ZERO" value="false" />
   <property name="RING">
-    <v>x y z</v>
+    <t>
+      <v>x y z</v>
+    </t>
   </property>
   <property name="DIM" value="1" />
   <property name="MONOMIAL" value="false" />
