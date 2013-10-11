@@ -321,11 +321,14 @@ public:
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)singIdeal;
       // call radical
-      leftv res=iiMake_proc(radical,NULL,&arg);
-      if (res==NULL) {
+      const BOOLEAN sl = iiMake_proc(radical, NULL, &arg);
+      if (sl) {
          errorreported = 0;
          throw std::runtime_error("radical returned an error");
       }
+      leftv res = (leftv)omAlloc0(sizeof(*res));
+      res->Copy(&iiRETURNEXPR);
+      iiRETURNEXPR.Init();
       return new SingularIdeal_impl((::ideal) (res->Data()), singRing);
    }
 
@@ -337,7 +340,14 @@ public:
       arg.rtyp=IDEAL_CMD;
       arg.data=(void *)idCopy(singIdeal);
       // call primdecSY
-      leftv res=iiMake_proc(primdecSY,NULL,&arg);
+      const BOOLEAN sl = iiMake_proc(primdecSY, NULL, &arg);
+      if (sl) {
+         errorreported = 0;
+         throw std::runtime_error("radical returned an error");
+      }
+      leftv res = (leftv)omAlloc0(sizeof(*res));
+      res->Copy(&iiRETURNEXPR);
+      iiRETURNEXPR.Init();
       if(res->Typ() == LIST_CMD){
          lists L = (lists)res->Data();
          Array<SingularIdeal_wrap*> result(L->nr+1);
@@ -378,6 +388,7 @@ public:
    }
    
    static SingularIdeal_impl* quotient(const SingularIdeal_impl* I, const SingularIdeal_impl* J);
+   static SingularIdeal_impl* sum     (const SingularIdeal_impl* I, const SingularIdeal_impl* J);
 };
 
 
@@ -386,6 +397,11 @@ SingularIdeal_impl* SingularIdeal_impl::quotient(const SingularIdeal_impl* I, co
    // the second one that we want the output to be an ideal.
    ::ideal quot = idQuot(I->singIdeal, J->singIdeal, true, true);
    return new SingularIdeal_impl(quot,I->singRing);
+}
+
+SingularIdeal_impl* SingularIdeal_impl::sum(const SingularIdeal_impl* I, const SingularIdeal_impl* J){
+   ::ideal sum = idAdd(I->singIdeal, J->singIdeal);
+   return new SingularIdeal_impl(sum, I->singRing);
 }
 
 } // end anonymous namespace

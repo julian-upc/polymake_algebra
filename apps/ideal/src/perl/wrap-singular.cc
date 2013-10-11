@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-2010
    Ewgenij Gawrilow, Michael Joswig (Technische Universitaet Darmstadt, Germany)
-   http://www.polymake.de
+   http://www.polymake.org
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 */
 
-namespace polymake { namespace ideal {
+namespace polymake { namespace ideal { namespace {
 ///==== Automatically generated contents follow.    Please do not delete this line. ====
    FunctionWrapper4perl( void (std::string const&) ) {
       perl::Value arg0(stack[0]);
@@ -22,4 +22,4 @@ namespace polymake { namespace ideal {
    FunctionWrapperInstance4perl( void (std::string const&) );
 
 ///==== Automatically generated contents end here.  Please do not delete this line. ====
-} }
+} } }
