@@ -98,6 +98,14 @@ public:
       return singIdeal->polynomials(r);
    }
    
+   static SingularIdeal quotient(const SingularIdeal& I, const SingularIdeal& J) {
+       return SingularIdeal(SingularIdeal_impl::quotient(I->singIdeal, J->singIdeal));
+   }
+
+   static SingularIdeal sum     (const SingularIdeal& I, const SingularIdeal& J) {
+       return SingularIdeal(SingularIdeal_impl::sum     (I->singIdeal, J->singIdeal));
+   }
+
    friend perl::Object quotient(perl::Object I, perl::Object J);
 };
 

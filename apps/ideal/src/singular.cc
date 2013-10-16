@@ -404,14 +404,9 @@ SingularIdeal_impl* SingularIdeal_impl::sum(const SingularIdeal_impl* I, const S
    return new SingularIdeal_impl(sum, I->singRing);
 }
 
-} // end anonymous namespace
 
-SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> >& gens, const Matrix<int>& ord) 
-{
-   return new SingularIdeal_impl(gens,ord);
-}
-
-perl::Object quotient(perl::Object I, perl::Object J)
+template<typename P_BINARY_FUNC>
+perl::Object binary_operation(perl::Object I, perl::Object J, P_BINARY_FUNC f)
 {
    Ring<> ri;
    Ring<> rj;
@@ -430,15 +425,31 @@ perl::Object quotient(perl::Object I, perl::Object J)
    SingularIdeal_impl implI(gensI,sri);
    SingularIdeal_impl implJ(gensJ,sri);
 
-   SingularIdeal_impl* quotimpl = SingularIdeal_impl::quotient(&implI,&implJ);
+   SingularIdeal_impl* operimpl = (*f)(&implI,&implJ);
 
    perl::Object res("Ideal");
    res.take("RING") << ri;
-   res.take("GENERATORS") << quotimpl->polynomials(ri);
-   delete quotimpl;
+   res.take("GENERATORS") << operimpl->polynomials(ri);
+   delete operimpl;
    return res;
 }
 
+} // end anonymous namespace
+
+SingularIdeal_wrap* SingularIdeal_wrap::create(const Array<Polynomial<> >& gens, const Matrix<int>& ord) 
+{
+   return new SingularIdeal_impl(gens,ord);
+}
+    
+perl::Object quotient(perl::Object I, perl::Object J)
+{
+    return binary_operation(I, J, &SingularIdeal_impl::quotient);
+}
+
+perl::Object sum(perl::Object I, perl::Object J)
+{
+    return binary_operation(I, J, &SingularIdeal_impl::sum);
+}
 
 UserFunction4perl("# @category Algebra"
                   "# Computes an ideal quotient via SINGULAR"
@@ -446,6 +457,13 @@ UserFunction4perl("# @category Algebra"
                   "# @param Ideal J"
                   "# @return Ideal",
                   &quotient, "quotient(Ideal, Ideal)");
+
+UserFunction4perl("# @category Algebra"
+                  "# Computes an ideal sum via SINGULAR"
+                  "# @param Ideal I"
+                  "# @param Ideal J"
+                  "# @return Ideal",
+                  &sum, "sum(Ideal, Ideal)");
 
 } }
 
