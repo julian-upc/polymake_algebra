@@ -21,13 +21,13 @@
 # TODO: Move to kernel (mtk).
 object Ideal {
 
-	user_method HOMOGENIZE {
-		my ($this, $var) = @_;
-      die "no implemented yet";
-		my $i = new Ideal();
-
-		return $i;
-	}
+#	user_method HOMOGENIZE {
+#		my ($this, $var) = @_;
+#      die "no implemented yet";
+#		my $i = new Ideal();
+#
+#		return $i;
+#	}
 
 	user_method CONTAINS {
 		my ($this, $poly) = @_;
